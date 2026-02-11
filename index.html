@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feed Estelar Latam</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #000;
+      color: #fff;
+      padding-bottom: 80px;
+    }
+    
+    .header {
+      position: sticky;
+      top: 0;
+      background: #000;
+      padding: 15px 20px;
+      border-bottom: 1px solid #333;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .add-btn {
+      width: 30px;
+      height: 30px;
+      background: #fff;
+      color: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 15px;
+      border-bottom: 1px solid #333;
+    }
+    
+    .tab {
+      color: #888;
+      font-size: 14px;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .tab.active {
+      color: #fff;
+      font-weight: 600;
+    }
+    
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -16px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #fff;
+    }
+    
+    .feed {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .post {
+      border-bottom: 1px solid #333;
+      padding: 15px;
+    }
+    
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #333;
+    }
+    
+    .user-info {
+      flex: 1;
+    }
+    
+    .username {
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .badge {
+      font-size: 12px;
+    }
+    
+    .time {
+      font-size: 12px;
+      color: #888;
+    }
+    
+    .more-btn {
+      color: #888;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    
+    .post-image {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+    
+    .post-actions {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 10px;
+    }
+    
+    .action-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .action-btn span {
+      font-size: 14px;
+    }
+    
+    .post-caption {
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    
+    .hashtags {
+      color: #4a9eff;
+      font-size: 14px;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #000;
+      z-index: 200;
+      overflow-y: auto;
+    }
+    
+    .modal.active {
+      display: block;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      border-bottom: 1px solid #333;
+    }
+    
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .close-btn, .post-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    
+    .post-btn {
+      background: #4a9eff;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    
+    .post-btn:disabled {
+      background: #666;
+      cursor: not-allowed;
+    }
+    
+    .modal-content {
+      padding: 20px;
+    }
+    
+    .image-preview {
+      width: 100%;
+      height: 300px;
+      background: #111;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .image-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .upload-placeholder {
+      text-align: center;
+      color: #888;
+    }
+    
+    .file-input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    
+    .caption-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      padding: 15px 0;
+      border-bottom: 1px solid #333;
+      resize: none;
+      min-height: 100px;
+      font-family: inherit;
+    }
+    
+    .caption-input::placeholder {
+      color: #666;
+    }
+    
+    .caption-input:focus {
+      outline: none;
+    }
+    
+    .hashtag-section {
+      margin-top: 20px;
+    }
+    
+    .hashtag-title {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+    }
+    
+    .hashtag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .hashtag-chip {
+      background: #222;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+    
+    .hashtag-chip.selected {
+      background: #4a9eff;
+      color: #fff;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #888;
+    }
+    
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #000;
+      border-top: 1px solid #333;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      z-index: 100;
+    }
+    
+    .nav-item {
+      color: #888;
+      font-size: 24px;
+      padding: 5px 20px;
+      cursor: pointer;
+    }
+    
+    .nav-item.active {
+      color: #fff;
+    }
+    
+    .nav-item.add {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -20px;
+      border: 4px solid #000;
+    }
+    
+    .error-message {
+      background: #ff4444;
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Feed</h1>
+    <div class="add-btn" onclick="openModal()">+</div>
+  </div>
+  
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(this, 'recomendado')">Recomendado</div>
+    <div class="tab" onclick="switchTab(this, 'siguiendo')">Siguiendo</div>
+  </div>
+  
+  <div class="feed" id="feed">
+    <div class="loading">Cargando posts...</div>
+  </div>
+  
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <span class="modal-title">Nuevo Post</span>
+      <button class="post-btn" id="postBtn" onclick="submitPost()">Postear</button>
+    </div>
+    
+    <div class="modal-content">
+      <div class="image-preview" id="imagePreview">
+        <div class="upload-placeholder">
+          <div style="font-size: 40px; margin-bottom: 10px;">📷</div>
+          <div>Toca para subir imagen</div>
+          <div style="font-size: 12px; margin-top: 5px;">PNG o JPG</div>
+        </div>
+        <input type="file" class="file-input" id="fileInput" accept="image/png,image/jpeg" onchange="handleFileSelect(event)">
+      </div>
+      
+      <textarea class="caption-input" id="captionInput" placeholder="Agregar un pie de foto..." maxlength="240"></textarea>
+      <div style="text-align: right; color: #666; font-size: 12px; margin-top: 5px;">
+        <span id="charCount">0</span>/240
+      </div>
+      
+      <div class="error-message" id="errorMessage"></div>
+      
+      <div class="hashtag-section">
+        <div class="hashtag-title">Hashtags populares</div>
+        <div class="hashtag-list" id="hashtagList">
+          <span class="hashtag-chip" onclick="toggleHashtag(this)">#おはようREALITY</span>
+          <span class="hashtag-chip" onclick="toggleHashtag(this)">#FilteredLook</span>
+          <span class="hashtag-chip" onclick="toggleHashtag(this)">#PhotoOfTheDay</span>
+          <span class="hashtag-chip" onclick="toggleHashtag(this)">#DailyPost</span>
+          <span class="hashtag-chip" onclick="toggleHashtag(this)">#Drawing</span>
+          <span class="hashtag-chip" onclick="toggleHashtag(this)">#AskMe</span>
+          <span class="hashtag-chip" onclick="toggleHashtag(this)">#REALITYOutfit</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="bottom-nav">
+    <div class="nav-item active">🏠</div>
+    <div class="nav-item">🎒</div>
+    <div class="nav-item add" onclick="openModal()">+</div>
+    <div class="nav-item">🛍️</div>
+    <div class="nav-item">👤</div>
+  </div>
+
+  <script>
+    let selectedImageBase64 = null;
+    let selectedHashtags = [];
+    
+    window.onload = function() {
+      loadFeed();
+      
+      document.getElementById('captionInput').addEventListener('input', function() {
+        document.getElementById('charCount').textContent = this.value.length;
+      });
+    };
+    
+    function loadFeed() {
+      google.script.run
+        .withSuccessHandler(function(response) {
+          console.log('Respuesta:', response);
+          if (response.success) {
+            renderFeed(response.posts);
+          } else {
+            showError('Error cargando feed: ' + response.error);
+          }
+        })
+        .withFailureHandler(function(error) {
+          console.error('Error:', error);
+          showError('Error de conexión: ' + error);
+        })
+        .getFeed(20, 0);
+    }
+    
+    function renderFeed(posts) {
+      const feedEl = document.getElementById('feed');
+      
+      if (!posts || posts.length === 0) {
+        feedEl.innerHTML = '<div class="loading">No hay posts aún. ¡Sé el primero!</div>';
+        return;
+      }
+      
+      feedEl.innerHTML = posts.map(post => `
+        <div class="post" data-id="${post.id}">
+          <div class="post-header">
+            <img src="${post.avatar_url || 'https://www.gravatar.com/avatar/?d=mp'}" class="avatar" alt="avatar" onerror="this.src='https://www.gravatar.com/avatar/?d=mp'">
+            <div class="user-info">
+              <div class="username">
+                ${escapeHtml(post.username)}
+                <span class="badge">❄️🔥</span>
+              </div>
+              <div class="time">${formatTime(post.timestamp)}</div>
+            </div>
+            <div class="more-btn">⋯</div>
+          </div>
+          
+          <img src="${post.imagen_url}" class="post-image" alt="post" loading="lazy" onerror="this.style.display='none'">
+          
+          <div class="post-actions">
+            <button class="action-btn" onclick="likePost('${post.id}')">
+              ♡ <span>${post.likes}</span>
+            </button>
+            <button class="action-btn">
+              💬 <span>${post.comentarios}</span>
+            </button>
+            <button class="action-btn">
+              🔗
+            </button>
+          </div>
+          
+          <div class="post-caption">${escapeHtml(post.caption)}</div>
+          <div class="hashtags">${escapeHtml(post.hashtags)}</div>
+        </div>
+      `).join('');
+    }
+    
+    function formatTime(timestamp) {
+      if (!timestamp) return 'Hace un momento';
+      
+      let date;
+      if (typeof timestamp === 'string') {
+        date = new Date(timestamp);
+      } else if (typeof timestamp === 'number') {
+        date = new Date(timestamp);
+      } else {
+        return 'Hace un momento';
+      }
+      
+      const now = new Date();
+      const diff = (now - date) / 1000;
+      
+      if (diff < 60) return 'Hace un momento';
+      if (diff < 3600) return `Hace ${Math.floor(diff/60)} min`;
+      if (diff < 86400) return `Hace ${Math.floor(diff/3600)} h`;
+      return `Hace ${Math.floor(diff/86400)} d`;
+    }
+    
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    function openModal() {
+      document.getElementById('modal').classList.add('active');
+      document.getElementById('errorMessage').style.display = 'none';
+    }
+    
+    function closeModal() {
+      if (confirm('¿Descartar cambios?')) {
+        document.getElementById('modal').classList.remove('active');
+        resetForm();
+      }
+    }
+    
+    function resetForm() {
+      selectedImageBase64 = null;
+      selectedHashtags = [];
+      document.getElementById('fileInput').value = '';
+      document.getElementById('captionInput').value = '';
+      document.getElementById('charCount').textContent = '0';
+      document.getElementById('errorMessage').style.display = 'none';
+      
+      document.getElementById('imagePreview').innerHTML = `
+        <div class="upload-placeholder">
+          <div style="font-size: 40px; margin-bottom: 10px;">📷</div>
+          <div>Toca para subir imagen</div>
+          <div style="font-size: 12px; margin-top: 5px;">PNG o JPG</div>
+        </div>
+        <input type="file" class="file-input" id="fileInput" accept="image/png,image/jpeg" onchange="handleFileSelect(event)">
+      `;
+      
+      document.querySelectorAll('.hashtag-chip').forEach(chip => chip.classList.remove('selected'));
+    }
+    
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      if (!file.type.match('image.*')) {
+        showError('Por favor selecciona una imagen PNG o JPG');
+        return;
+      }
+      
+      if (file.size > 10 * 1024 * 1024) {
+        showError('La imagen debe ser menor a 10MB');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        selectedImageBase64 = e.target.result;
+        document.getElementById('imagePreview').innerHTML = `
+          <img src="${e.target.result}" alt="preview">
+        `;
+      };
+      reader.onerror = function() {
+        showError('Error leyendo la imagen');
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    function toggleHashtag(element) {
+      const tag = element.textContent;
+      if (selectedHashtags.includes(tag)) {
+        selectedHashtags = selectedHashtags.filter(t => t !== tag);
+        element.classList.remove('selected');
+      } else {
+        selectedHashtags.push(tag);
+        element.classList.add('selected');
+      }
+    }
+    
+    function showError(message) {
+      const errorEl = document.getElementById('errorMessage');
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+      setTimeout(() => {
+        errorEl.style.display = 'none';
+      }, 5000);
+    }
+    
+    function submitPost() {
+      const caption = document.getElementById('captionInput').value.trim();
+      
+      if (!selectedImageBase64) {
+        showError('Por favor selecciona una imagen');
+        return;
+      }
+      
+      const postBtn = document.getElementById('postBtn');
+      postBtn.textContent = '...';
+      postBtn.disabled = true;
+      
+      const postData = {
+        username: 'Usuario',
+        avatar_url: 'https://www.gravatar.com/avatar/?d=mp',
+        caption: caption,
+        hashtags: selectedHashtags.join(' '),
+        imagen_base64: selectedImageBase64
+      };
+      
+      google.script.run
+        .withSuccessHandler(function(response) {
+          postBtn.textContent = 'Postear';
+          postBtn.disabled = false;
+          
+          if (response.success) {
+            alert('¡Post creado exitosamente!');
+            document.getElementById('modal').classList.remove('active');
+            resetForm();
+            loadFeed();
+          } else {
+            showError('Error: ' + response.error);
+          }
+        })
+        .withFailureHandler(function(error) {
+          postBtn.textContent = 'Postear';
+          postBtn.disabled = false;
+          showError('Error de conexión: ' + error);
+        })
+        .createPost(postData);
+    }
+    
+    function likePost(postId) {
+      google.script.run
+        .withSuccessHandler(function(response) {
+          if (response.success) {
+            loadFeed();
+          }
+        })
+        .likePost(postId);
+    }
+    
+    function switchTab(element, tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      element.classList.add('active');
+    }
+  </script>
+</body>
+</html>
