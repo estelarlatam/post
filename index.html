@@ -1,910 +1,2090 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Feed - Estelar Latam</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Feed - Estelar Latam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #000;
-      color: #fff;
-      min-height: 100vh;
-      padding-bottom: 80px;
-    }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    /* Header tipo REALITY */
-    .header {
-      background: #000;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      border-bottom: 1px solid #222;
-    }
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: #f8f9fa;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.1);
+            padding-bottom: 80px;
+        }
 
-    .header-title {
-      font-size: 18px;
-      font-weight: 700;
-    }
+        /* Header */
+        .header {
+            background: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
 
-    .add-btn {
-      width: 32px;
-      height: 32px;
-      background: #fff;
-      color: #000;
-      border: none;
-      border-radius: 50%;
-      font-size: 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+        .header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #2d3436;
+        }
 
-    /* Tabs tipo REALITY */
-    .tabs {
-      display: flex;
-      background: #000;
-      border-bottom: 1px solid #222;
-    }
+        .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
 
-    .tab {
-      flex: 1;
-      padding: 14px 8px;
-      text-align: center;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      color: #666;
-      position: relative;
-      transition: color 0.3s;
-      background: transparent;
-      border: none;
-    }
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            position: relative;
+        }
 
-    .tab.active {
-      color: #fff;
-      font-weight: 600;
-    }
+        .header-btn:hover {
+            background: #f0f0f0;
+        }
 
-    .tab.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 25%;
-      right: 25%;
-      height: 2px;
-      background: #fff;
-    }
+        .header-btn svg {
+            width: 24px;
+            height: 24px;
+            stroke: #2d3436;
+            fill: none;
+        }
 
-    /* Feed */
-    .feed {
-      max-width: 600px;
-      margin: 0 auto;
-    }
+        .notification-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: #ff4757;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
 
-    /* Post tipo REALITY */
-    .post {
-      border-bottom: 1px solid #222;
-      padding: 12px 16px;
-      animation: fadeIn 0.3s ease;
-    }
+        /* Tabs */
+        .tabs-container {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 72px;
+            z-index: 99;
+        }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            padding: 0 10px;
+        }
 
-    .post-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
+        .tab {
+            flex: 1;
+            padding: 16px 8px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            font-weight: 700;
+            color: #b2bec3;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            border: none;
+            background: transparent;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-    .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 1px solid #333;
-    }
+        .tab.active {
+            color: #2d3436;
+        }
 
-    .user-info {
-      flex: 1;
-    }
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 15%;
+            right: 15%;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b6b, #feca57);
+            border-radius: 3px 3px 0 0;
+            animation: slideIn 0.3s ease;
+        }
 
-    .username {
-      font-weight: 600;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+        .tab.staff-tab.active::after {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
 
-    .badge {
-      font-size: 12px;
-    }
+        @keyframes slideIn {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
 
-    .post-time {
-      font-size: 12px;
-      color: #666;
-      margin-top: 1px;
-    }
+        /* Staff Badge en tab */
+        .staff-badge-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
 
-    .more-btn {
-      color: #666;
-      font-size: 20px;
-      cursor: pointer;
-      padding: 4px;
-    }
+        .staff-icon-tab {
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 8px;
+        }
 
-    .post-image {
-      width: 100%;
-      border-radius: 12px;
-      margin-bottom: 10px;
-      display: block;
-    }
+        /* Loading State */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            color: #636e72;
+        }
 
-    .post-actions {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 8px;
-    }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ff6b6b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
 
-    .action-btn {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 22px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px;
-      transition: transform 0.2s;
-    }
+        .loading-spinner.staff {
+            border-top-color: #667eea;
+        }
 
-    .action-btn:active {
-      transform: scale(0.9);
-    }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-    .action-btn.liked {
-      color: #ff4757;
-    }
+        .error-container {
+            text-align: center;
+            padding: 40px 20px;
+            color: #ff6b6b;
+        }
 
-    .action-btn span {
-      font-size: 14px;
-      font-weight: 500;
-    }
+        .error-container button {
+            margin-top: 16px;
+            padding: 10px 20px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
 
-    .post-caption {
-      font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 6px;
-      color: #e0e0e0;
-    }
+        /* Post Card Normal */
+        .post-card {
+            background: white;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            animation: fadeIn 0.4s ease;
+        }
 
-    .hashtags {
-      color: #4a9eff;
-      font-size: 14px;
-      line-height: 1.4;
-    }
+        /* Post Card STAFF - Destacado */
+        .post-card.staff-post {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            border-radius: 20px;
+            margin: 16px;
+            overflow: hidden;
+        }
 
-    /* Loading */
-    .loading {
-      text-align: center;
-      padding: 60px 20px;
-      color: #666;
-    }
+        .post-card.staff-post::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: -1;
+            margin: -2px;
+            border-radius: 22px;
+        }
 
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid #333;
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 16px;
-    }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+        /* Staff Header Especial */
+        .staff-header-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-    /* Empty state */
-    .empty {
-      text-align: center;
-      padding: 80px 20px;
-      color: #666;
-    }
+        .staff-header-banner svg {
+            width: 16px;
+            height: 16px;
+            stroke: white;
+            stroke-width: 2.5;
+        }
 
-    .empty-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
+        /* Post Header */
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+        }
 
-    /* Bottom Nav tipo REALITY */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #000;
-      border-top: 1px solid #222;
-      display: flex;
-      justify-content: space-around;
-      padding: 8px 0 20px;
-      z-index: 100;
-    }
+        .post-card.staff-post .post-header {
+            background: white;
+            margin: 0 4px;
+            margin-top: 4px;
+            border-radius: 16px 16px 0 0;
+            padding: 12px;
+        }
 
-    .nav-item {
-      color: #666;
-      font-size: 24px;
-      padding: 8px 20px;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
+        .post-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
 
-    .nav-item.active {
-      color: #fff;
-    }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #ff6b6b, #feca57) border-box;
+        }
 
-    .nav-item.add {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: -20px;
-      border: 4px solid #000;
-      color: #fff;
-      font-size: 24px;
-    }
+        .post-card.staff-post .user-avatar {
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #667eea, #764ba2) border-box;
+            width: 44px;
+            height: 44px;
+        }
 
-    /* Modal Nuevo Post */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.95);
-      z-index: 1000;
-      overflow-y: auto;
-    }
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
 
-    .modal-overlay.active {
-      display: block;
-    }
+        .username {
+            font-weight: 700;
+            font-size: 14px;
+            color: #2d3436;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
 
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px;
-      background: #000;
-      border-bottom: 1px solid #222;
-      position: sticky;
-      top: 0;
-      z-index: 1001;
-    }
+        .post-card.staff-post .username {
+            font-size: 15px;
+            color: #2d3436;
+        }
 
-    .modal-title {
-      font-size: 16px;
-      font-weight: 600;
-    }
+        .verified-badge {
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 9px;
+            font-weight: 800;
+        }
 
-    .close-btn, .post-btn {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-    }
+        .verified-badge.staff {
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+        }
 
-    .post-btn {
-      background: #4a9eff;
-      padding: 8px 20px;
-      border-radius: 20px;
-      font-weight: 600;
-    }
+        .user-role {
+            font-size: 11px;
+            color: #667eea;
+            font-weight: 700;
+            margin-top: 2px;
+        }
 
-    .post-btn:disabled {
-      opacity: 0.5;
-    }
+        .post-time {
+            font-size: 12px;
+            color: #636e72;
+            margin-top: 2px;
+        }
 
-    .modal-content {
-      padding: 16px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
+        .post-menu {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
 
-    .image-preview {
-      width: 100%;
-      aspect-ratio: 1;
-      background: #111;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-      overflow: hidden;
-      position: relative;
-      border: 2px dashed #333;
-    }
+        .post-menu:hover {
+            background: #f0f0f0;
+        }
 
-    .image-preview.has-image {
-      border: none;
-    }
+        .post-menu svg {
+            width: 20px;
+            height: 20px;
+            fill: #636e72;
+        }
 
-    .image-preview img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+        /* Post Image */
+        .post-image-container {
+            width: 100%;
+            position: relative;
+            background: #f0f0f0;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+        }
 
-    .upload-text {
-      text-align: center;
-      color: #666;
-    }
+        .post-card.staff-post .post-image-container {
+            aspect-ratio: 16 / 9;
+            margin: 0 4px;
+            border-radius: 12px;
+        }
 
-    .upload-icon {
-      font-size: 48px;
-      margin-bottom: 8px;
-    }
+        @supports not (aspect-ratio: 1 / 1) {
+            .post-image-container {
+                padding-bottom: 100%;
+            }
+            .post-card.staff-post .post-image-container {
+                padding-bottom: 56.25%;
+            }
+        }
 
-    .file-input {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
+        .post-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
 
-    .caption-input {
-      width: 100%;
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid #333;
-      color: #fff;
-      font-size: 16px;
-      padding: 16px 0;
-      resize: none;
-      min-height: 100px;
-      font-family: inherit;
-    }
+        .post-image-container:active .post-image {
+            transform: scale(0.98);
+        }
 
-    .caption-input::placeholder {
-      color: #666;
-    }
+        /* Double tap heart animation */
+        .heart-animation {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 100px;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
 
-    .caption-input:focus {
-      outline: none;
-      border-bottom-color: #4a9eff;
-    }
+        .heart-animation.show {
+            animation: heartPop 0.8s ease;
+        }
 
-    .char-count {
-      text-align: right;
-      color: #666;
-      font-size: 12px;
-      margin-top: 8px;
-    }
+        @keyframes heartPop {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
 
-    .hashtags-section {
-      margin-top: 24px;
-    }
+        /* Post Actions */
+        .post-actions {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .hashtags-title {
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+        .post-card.staff-post .post-actions {
+            background: white;
+            margin: 0 4px;
+            border-radius: 0 0 16px 16px;
+            margin-bottom: 4px;
+        }
 
-    .hashtags-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+        .action-group {
+            display: flex;
+            gap: 16px;
+        }
 
-    .hashtag-chip {
-      background: #1a1a1a;
-      border: 1px solid #333;
-      padding: 10px 16px;
-      border-radius: 20px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
+        .action-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
 
-    .hashtag-chip.selected {
-      background: #4a9eff;
-      border-color: #4a9eff;
-      color: #fff;
-    }
+        .action-btn:active {
+            transform: scale(0.9);
+        }
 
-    .error-msg {
-      background: rgba(255, 71, 87, 0.1);
-      color: #ff4757;
-      padding: 12px;
-      border-radius: 8px;
-      margin: 12px 0;
-      font-size: 14px;
-      display: none;
-    }
+        .action-btn svg {
+            width: 28px;
+            height: 28px;
+            stroke: #2d3436;
+            stroke-width: 2;
+            fill: none;
+            transition: all 0.2s;
+        }
 
-    .success-msg {
-      background: rgba(46, 213, 115, 0.1);
-      color: #2ed573;
-      padding: 12px;
-      border-radius: 8px;
-      margin: 12px 0;
-      font-size: 14px;
-      display: none;
-    }
-  </style>
+        .action-btn.liked svg {
+            fill: #ff4757;
+            stroke: #ff4757;
+            animation: likeBounce 0.4s ease;
+        }
+
+        @keyframes likeBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .action-btn.saved svg {
+            fill: #2d3436;
+            stroke: #2d3436;
+        }
+
+        /* Post Content */
+        .post-content {
+            padding: 0 16px 16px;
+        }
+
+        .post-card.staff-post .post-content {
+            background: white;
+            margin: 0 4px;
+            padding: 12px;
+            border-radius: 0 0 16px 16px;
+            margin-bottom: 4px;
+        }
+
+        .likes-count {
+            font-weight: 700;
+            font-size: 14px;
+            color: #2d3436;
+            margin-bottom: 8px;
+        }
+
+        .post-caption {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #2d3436;
+            margin-bottom: 8px;
+        }
+
+        .post-card.staff-post .post-caption {
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .post-caption .username {
+            margin-right: 6px;
+        }
+
+        .post-caption a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .view-comments {
+            font-size: 14px;
+            color: #636e72;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .post-date {
+            font-size: 11px;
+            color: #b2bec3;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Hashtags */
+        .hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .hashtag {
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .hashtag:hover {
+            opacity: 0.7;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #b2bec3;
+            font-size: 15px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Staff Empty State Especial */
+        .staff-empty-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 40px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: #b2bec3;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: #ff6b6b;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .nav-item.active svg {
+            stroke: url(#gradient);
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Create Post Button */
+        .create-btn {
+            width: 48px;
+            height: 32px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .create-btn:active {
+            transform: scale(0.95);
+        }
+
+        .create-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke: white;
+            stroke-width: 2.5;
+        }
+
+        /* New Post Badge */
+        .new-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            animation: pulse 2s infinite;
+            z-index: 10;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Staff Badge simplificado */
+        .staff-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .staff-badge svg {
+            width: 12px;
+            height: 12px;
+            stroke: white;
+            stroke-width: 2.5;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #2d3436;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1001;
+            opacity: 0;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-overlay.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Create Post Modal */
+        .create-modal {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .create-modal.show {
+            transform: translateY(0);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .create-modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .create-modal-title {
+            font-weight: 700;
+            font-size: 18px;
+            color: #2d3436;
+        }
+
+        .create-modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #636e72;
+            transition: all 0.2s;
+        }
+
+        .create-modal-close:hover {
+            background: #e0e0e0;
+        }
+
+        /* Create Post Content */
+        .create-post-content {
+            padding: 20px;
+        }
+
+        .image-upload-area {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #f8f9fa;
+            border: 2px dashed #dfe6e9;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-upload-area:hover {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+        }
+
+        .image-upload-area.has-image {
+            border: none;
+            background: transparent;
+        }
+
+        .upload-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #b2bec3;
+        }
+
+        .upload-placeholder svg {
+            width: 48px;
+            height: 48px;
+            stroke: #b2bec3;
+            stroke-width: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .upload-placeholder span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .upload-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Caption Input */
+        .caption-section {
+            margin-bottom: 20px;
+        }
+
+        .caption-input {
+            width: 100%;
+            min-height: 100px;
+            padding: 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .caption-input:focus {
+            border-color: #ff6b6b;
+        }
+
+        .caption-input::placeholder {
+            color: #b2bec3;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 12px;
+            color: #b2bec3;
+            margin-top: 8px;
+        }
+
+        .char-count.warning {
+            color: #ff4757;
+            font-weight: 600;
+        }
+
+        /* Hashtags Section */
+        .hashtags-section {
+            margin-bottom: 20px;
+        }
+
+        .section-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hashtags-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .hashtag-chip {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #636e72;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .hashtag-chip:hover {
+            background: #fff5f5;
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .hashtag-chip.selected {
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        }
+
+        .hashtag-chip.selected:hover {
+            opacity: 0.9;
+        }
+
+        /* Action Buttons */
+        .create-actions {
+            display: flex;
+            gap: 12px;
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 14px 24px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: #636e72;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-primary {
+            flex: 2;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            border: none;
+            border-radius: 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Discard Dialog */
+        .discard-dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .discard-dialog.show {
+            display: flex;
+        }
+
+        .discard-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 320px;
+            width: 100%;
+            text-align: center;
+            animation: scaleIn 0.2s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .discard-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 8px;
+        }
+
+        .discard-text {
+            font-size: 14px;
+            color: #636e72;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .discard-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #667eea;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: #f0f0f0;
+        }
+
+        .btn-discard {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #ff4757;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-discard:hover {
+            background: #fff5f5;
+        }
+
+        /* Comments Modal */
+        .comments-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            animation: fadeIn 0.3s;
+        }
+
+        .comments-modal.show {
+            display: block;
+        }
+
+        .comments-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s;
+        }
+
+        .comments-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .comments-title {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .comments-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #636e72;
+        }
+
+        /* Staff Welcome Card */
+        .staff-welcome {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px;
+            margin: 16px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .staff-welcome h2 {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .staff-welcome p {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .app-container {
+                max-width: 100%;
+            }
+        }
+
+        /* Touch feedback */
+        .post-card, .action-btn, .nav-item, .hashtag-chip {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* SVG Gradient definition */
+        .svg-defs {
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+    </style>
+<base target="_blank">
 </head>
 <body>
-  <!-- Header -->
-  <header class="header">
-    <h1 class="header-title">Feed</h1>
-    <button class="add-btn" onclick="openModal()">+</button>
-  </header>
+    <svg class="svg-defs">
+        <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#feca57;stop-opacity:1" />
+            </linearGradient>
+        </defs>
+    </svg>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('recomendado', this)">Recomendado</button>
-    <button class="tab" onclick="switchTab('siguiendo', this)">Siguiendo</button>
-    <button class="tab" onclick="switchTab('anuncios', this)">Anuncios del Personal</button>
-  </div>
-
-  <!-- Feed -->
-  <div class="feed" id="feed">
-    <div class="loading">
-      <div class="spinner"></div>
-      <div>Cargando posts...</div>
-    </div>
-  </div>
-
-  <!-- Bottom Nav -->
-  <nav class="bottom-nav">
-    <div class="nav-item active">🏠</div>
-    <div class="nav-item">🎒</div>
-    <div class="nav-item add" onclick="openModal()">+</div>
-    <div class="nav-item">🛍️</div>
-    <div class="nav-item">👤</div>
-  </nav>
-
-  <!-- Modal Nuevo Post -->
-  <div class="modal-overlay" id="modal">
-    <div class="modal-header">
-      <button class="close-btn" onclick="closeModal()">✕</button>
-      <span class="modal-title">Nuevo Post</span>
-      <button class="post-btn" id="postBtn" onclick="submitPost()">Postear</button>
-    </div>
-
-    <div class="modal-content">
-      <div class="image-preview" id="imagePreview">
-        <div class="upload-text">
-          <div class="upload-icon">📷</div>
-          <div>Toca para subir imagen</div>
-          <div style="font-size: 12px; margin-top: 4px; color: #666;">PNG o JPG</div>
-        </div>
-        <input type="file" class="file-input" id="fileInput" accept="image/png,image/jpeg" onchange="handleFile(event)">
-      </div>
-
-      <textarea class="caption-input" id="caption" placeholder="Agregar un pie de foto..." maxlength="240"></textarea>
-      <div class="char-count"><span id="charCount">0</span>/240</div>
-
-      <div class="error-msg" id="errorMsg"></div>
-      <div class="success-msg" id="successMsg"></div>
-
-      <div class="hashtags-section">
-        <div class="hashtags-title">Hashtags populares</div>
-        <div class="hashtags-list">
-          <span class="hashtag-chip" onclick="selectTag(this)">#おはようREALITY</span>
-          <span class="hashtag-chip" onclick="selectTag(this)">#FilteredLook</span>
-          <span class="hashtag-chip" onclick="selectTag(this)">#PhotoOfTheDay</span>
-          <span class="hashtag-chip" onclick="selectTag(this)">#DailyPost</span>
-          <span class="hashtag-chip" onclick="selectTag(this)">#Drawing</span>
-          <span class="hashtag-chip" onclick="selectTag(this)">#AskMe</span>
-          <span class="hashtag-chip" onclick="selectTag(this)">#REALITYOutfit</span>
-          <span class="hashtag-chip" onclick="selectTag(this)">#AnuncioStaff</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // ============================================
-    // CONFIGURACIÓN - ACTUALIZA ESTA URL
-    // ============================================
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyTcUIHDKScoAl6x1TxtUCBD9Ag0LQ2mv8T2auglRDO--hmoYdHxIhPr2GdfxBD3mpacw/exec';
-    
-    let currentTab = 'recomendado';
-    let selectedImage = null;
-    let selectedHashtags = [];
-    let postsCache = {};
-
-    // ============================================
-    // INICIALIZACIÓN
-    // ============================================
-    document.addEventListener('DOMContentLoaded', () => {
-      loadPosts('todos');
-      
-      document.getElementById('caption').addEventListener('input', (e) => {
-        document.getElementById('charCount').textContent = e.target.value.length;
-      });
-    });
-
-    // ============================================
-    // CARGAR POSTS VIA JSONP
-    // ============================================
-    function loadPosts(section) {
-      const script = document.createElement('script');
-      const callback = 'jsonp_' + Date.now();
-      
-      window[callback] = (data) => {
-        handlePosts(data, section);
-        delete window[callback];
-        document.head.removeChild(script);
-      };
-      
-      script.src = `${API_URL}?action=getFeed&section=${section}&callback=${callback}`;
-      script.onerror = () => {
-        showError('Error de conexión. Intenta de nuevo.');
-        document.head.removeChild(script);
-      };
-      
-      document.head.appendChild(script);
-      
-      // Timeout
-      setTimeout(() => {
-        if (window[callback]) {
-          delete window[callback];
-          try { document.head.removeChild(script); } catch(e) {}
-          showError('Tiempo de espera agotado. Recarga la página.');
-        }
-      }, 10000);
-    }
-
-    function handlePosts(response, section) {
-      const feed = document.getElementById('feed');
-      
-      if (!response || !response.success) {
-        feed.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><div>Error cargando posts</div></div>`;
-        return;
-      }
-      
-      // Guardar en caché
-      postsCache[section] = response.posts;
-      
-      // Distribuir por secciones
-      const sections = {
-        recomendado: [],
-        siguiendo: [],
-        anuncios: []
-      };
-      
-      response.posts.forEach(post => {
-        if (post.section === 'anuncios') sections.anuncios.push(post);
-        else if (post.section === 'siguiendo') sections.siguiendo.push(post);
-        else sections.recomendado.push(post);
-      });
-      
-      // Renderizar sección actual
-      renderSection(currentTab, sections[currentTab] || []);
-    }
-
-    function renderSection(section, posts) {
-      const feed = document.getElementById('feed');
-      
-      if (!posts || posts.length === 0) {
-        feed.innerHTML = `
-          <div class="empty">
-            <div class="empty-icon">📭</div>
-            <div>No hay posts en esta sección</div>
-            <div style="font-size: 13px; margin-top: 8px; color: #666;">¡Sé el primero en publicar!</div>
-          </div>
-        `;
-        return;
-      }
-      
-      feed.innerHTML = posts.map(post => createPostHTML(post)).join('');
-    }
-
-    function createPostHTML(post) {
-      const timeAgo = formatTime(post.timestamp);
-      const isLiked = localStorage.getItem('liked_' + post.id) === 'true';
-      
-      return `
-        <article class="post" data-id="${post.id}">
-          <div class="post-header">
-            <img src="${post.avatar_url}" class="avatar" onerror="this.src='https://www.gravatar.com/avatar/?d=mp'">
-            <div class="user-info">
-              <div class="username">
-                ${escapeHtml(post.username)}
-                <span class="badge">✨</span>
-              </div>
-              <div class="post-time">${timeAgo}</div>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Feed</h1>
+            <div class="header-actions">
+                <button class="header-btn" onclick="showNotifications()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notification-dot"></span>
+                </button>
+                <button class="header-btn" onclick="openCreateModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </button>
             </div>
-            <div class="more-btn">⋯</div>
-          </div>
-          
-          ${post.imagen_url ? `<img src="${post.imagen_url}" class="post-image" loading="lazy" onerror="this.style.display='none'">` : ''}
-          
-          <div class="post-content">
-            <div class="post-actions">
-              <button class="action-btn ${isLiked ? 'liked' : ''}" onclick="likePost('${post.id}', this)">
-                ${isLiked ? '♥' : '♡'} <span>${post.likes}</span>
-              </button>
-              <button class="action-btn" onclick="showComments('${post.id}')">
-                💬 <span>${post.comentarios}</span>
-              </button>
-              <button class="action-btn">↗️</button>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('recommended', this)">Recomendado</button>
+                <button class="tab" onclick="switchTab('following', this)">Siguiendo</button>
+                <button class="tab staff-tab" onclick="switchTab('staff', this)">
+                    <span class="staff-badge-tab">
+                        <span class="staff-icon-tab">★</span>
+                        Staff
+                    </span>
+                </button>
             </div>
-            <div class="post-caption">${escapeHtml(post.caption)}</div>
-            <div class="hashtags">${escapeHtml(post.hashtags)}</div>
-          </div>
-        </article>
-      `;
-    }
-
-    // ============================================
-    // UTILIDADES
-    // ============================================
-    function formatTime(timestamp) {
-      if (!timestamp) return 'Hace un momento';
-      try {
-        const date = new Date(timestamp);
-        const now = new Date();
-        const diff = (now - date) / 1000;
-        
-        if (diff < 60) return 'Hace un momento';
-        if (diff < 3600) return `Hace ${Math.floor(diff/60)} min`;
-        if (diff < 86400) return `Hace ${Math.floor(diff/3600)} h`;
-        return `Hace ${Math.floor(diff/86400)} d`;
-      } catch (e) {
-        return 'Hace un momento';
-      }
-    }
-
-    function escapeHtml(text) {
-      if (!text) return '';
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    // ============================================
-    // INTERACCIONES
-    // ============================================
-    function switchTab(tab, element) {
-      currentTab = tab;
-      
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      element.classList.add('active');
-      
-      // Recargar posts para filtrar
-      loadPosts('todos');
-    }
-
-    function likePost(id, btn) {
-      // Evitar likes duplicados
-      if (localStorage.getItem('liked_' + id) === 'true') {
-        showError('Ya diste like a este post');
-        return;
-      }
-      
-      // Animación
-      btn.classList.add('liked');
-      btn.innerHTML = `♥ <span>${parseInt(btn.querySelector('span').textContent) + 1}</span>`;
-      
-      // Guardar en localStorage
-      localStorage.setItem('liked_' + id, 'true');
-      
-      // Enviar al servidor vía JSONP
-      const script = document.createElement('script');
-      const callback = 'like_' + Date.now();
-      
-      window[callback] = (data) => {
-        delete window[callback];
-        document.head.removeChild(script);
-      };
-      
-      script.src = `${API_URL}?action=likePost&id=${id}&callback=${callback}`;
-      document.head.appendChild(script);
-    }
-
-    function showComments(id) {
-      alert('Sistema de comentarios próximamente');
-    }
-
-    // ============================================
-    // MODAL Y CREAR POST
-    // ============================================
-    function openModal() {
-      document.getElementById('modal').classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-      document.getElementById('modal').classList.remove('active');
-      document.body.style.overflow = '';
-      resetForm();
-    }
-
-    function resetForm() {
-      selectedImage = null;
-      selectedHashtags = [];
-      document.getElementById('fileInput').value = '';
-      document.getElementById('caption').value = '';
-      document.getElementById('charCount').textContent = '0';
-      hideMessages();
-      
-      const preview = document.getElementById('imagePreview');
-      preview.classList.remove('has-image');
-      preview.innerHTML = `
-        <div class="upload-text">
-          <div class="upload-icon">📷</div>
-          <div>Toca para subir imagen</div>
-          <div style="font-size: 12px; margin-top: 4px; color: #666;">PNG o JPG</div>
         </div>
-        <input type="file" class="file-input" accept="image/png,image/jpeg" onchange="handleFile(event)">
-      `;
-      
-      document.querySelectorAll('.hashtag-chip').forEach(chip => chip.classList.remove('selected'));
-    }
 
-    function handleFile(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      
-      if (!file.type.match('image.*')) {
-        showError('Selecciona una imagen PNG o JPG');
-        return;
-      }
-      
-      if (file.size > 10 * 1024 * 1024) {
-        showError('La imagen debe ser menor a 10MB');
-        return;
-      }
-      
-      const reader = new FileReader();
-      reader.onload = (evt) => {
-        selectedImage = evt.target.result;
-        const preview = document.getElementById('imagePreview');
-        preview.classList.add('has-image');
-        preview.innerHTML = `<img src="${selectedImage}">`;
-      };
-      reader.readAsDataURL(file);
-    }
+        <!-- Loading State -->
+        <div id="loadingState" class="loading-container">
+            <div class="loading-spinner" id="loadingSpinner"></div>
+            <p id="loadingText">Cargando publicaciones...</p>
+        </div>
 
-    function selectTag(el) {
-      const tag = el.textContent;
-      
-      if (el.classList.contains('selected')) {
-        el.classList.remove('selected');
-        selectedHashtags = selectedHashtags.filter(t => t !== tag);
-      } else {
-        el.classList.add('selected');
-        selectedHashtags.push(tag);
-      }
-    }
+        <!-- Error State -->
+        <div id="errorState" class="error-container" style="display: none;">
+            <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+            <h3>Error al cargar</h3>
+            <p>No se pudieron cargar las publicaciones.</p>
+            <button onclick="loadPosts()">Reintentar</button>
+        </div>
 
-    function showError(msg) {
-      const el = document.getElementById('errorMsg');
-      el.textContent = msg;
-      el.style.display = 'block';
-      setTimeout(() => el.style.display = 'none', 5000);
-    }
+        <!-- Feed Content -->
+        <div id="feedContent">
+            <div id="postsContainer" class="posts-container">
+                <!-- Posts will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
 
-    function showSuccess(msg) {
-      const el = document.getElementById('successMsg');
-      el.textContent = msg;
-      el.style.display = 'block';
-      setTimeout(() => el.style.display = 'none', 3000);
-    }
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" onclick="setActiveNav(this)">
+            <svg viewBox="0 0 24 24">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span class="nav-label">Inicio</span>
+        </a>
+        <a href="#" class="nav-item" onclick="setActiveNav(this)">
+            <svg viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="9" y1="9" x2="15" y2="9"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+            </svg>
+            <span class="nav-label">Noticias</span>
+        </a>
+        <button class="nav-item create-btn" onclick="openCreateModal()">
+            <svg viewBox="0 0 24 24">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+        </button>
+        <a href="#" class="nav-item" onclick="setActiveNav(this)">
+            <svg viewBox="0 0 24 24">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+            <span class="nav-label">Mensajes</span>
+        </a>
+        <a href="#" class="nav-item" onclick="setActiveNav(this)">
+            <svg viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span class="nav-label">Perfil</span>
+        </a>
+    </nav>
 
-    function hideMessages() {
-      document.getElementById('errorMsg').style.display = 'none';
-      document.getElementById('successMsg').style.display = 'none';
-    }
+    <!-- Toast -->
+    <div id="toast" class="toast">
+        <span id="toastMessage">Acción realizada</span>
+    </div>
 
-    // ============================================
-    // ENVIAR POST
-    // ============================================
-    function submitPost() {
-      const caption = document.getElementById('caption').value.trim();
-      
-      if (!selectedImage) {
-        showError('Selecciona una imagen primero');
-        return;
-      }
-      
-      const btn = document.getElementById('postBtn');
-      btn.disabled = true;
-      btn.textContent = 'Publicando...';
-      hideMessages();
-      
-      // Crear iframe oculto para POST
-      const iframe = document.createElement('iframe');
-      iframe.name = 'postFrame_' + Date.now();
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-      
-      // Crear formulario
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = API_URL + '?action=createPost';
-      form.target = iframe.name;
-      
-      const data = {
-        username: 'Usuario',
-        avatar_url: 'https://www.gravatar.com/avatar/?d=mp',
-        caption: caption,
-        hashtags: selectedHashtags.join(' '),
-        imagen_base64: selectedImage
-      };
-      
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'postData';
-      input.value = JSON.stringify(data);
-      form.appendChild(input);
-      
-      // Manejar respuesta
-      iframe.onload = () => {
-        btn.disabled = false;
-        btn.textContent = 'Postear';
-        
-        try {
-          const response = iframe.contentDocument.body.innerText;
-          const result = JSON.parse(response);
-          
-          if (result.success) {
-            showSuccess('¡Post publicado!');
-            setTimeout(() => {
-              closeModal();
-              loadPosts('todos');
-            }, 1500);
-          } else {
-            showError('Error: ' + (result.error || 'Desconocido'));
-          }
-        } catch (e) {
-          showSuccess('¡Post publicado!');
-          setTimeout(() => {
-            closeModal();
-            loadPosts('todos');
-          }, 1500);
+    <!-- Create Post Modal -->
+    <div id="createModal" class="modal-overlay" onclick="handleOverlayClick(event)">
+        <div class="create-modal" onclick="event.stopPropagation()">
+            <div class="create-modal-header">
+                <h2 class="create-modal-title">Nuevo Post</h2>
+                <button class="create-modal-close" onclick="closeCreateModal()">×</button>
+            </div>
+            
+            <div class="create-post-content">
+                <!-- Image Upload -->
+                <div class="image-upload-area" id="imageUploadArea" onclick="selectImage()">
+                    <div class="upload-placeholder" id="uploadPlaceholder">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <span>Agregar una foto</span>
+                    </div>
+                    <img id="imagePreview" class="upload-preview" style="display: none;" alt="Preview">
+                    <button class="remove-image" id="removeImage" style="display: none;" onclick="removeImage(event)">×</button>
+                </div>
+
+                <!-- Caption Input -->
+                <div class="caption-section">
+                    <textarea 
+                        class="caption-input" 
+                        id="captionInput" 
+                        placeholder="Agregar un pie de foto..."
+                        maxlength="240"
+                        oninput="updateCharCount()"
+                    ></textarea>
+                    <div class="char-count" id="charCount">0/240</div>
+                </div>
+
+                <!-- Hashtags -->
+                <div class="hashtags-section">
+                    <div class="section-label">
+                        <span>#hashtag</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #b2bec3;">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                    <div class="hashtags-grid" id="hashtagsGrid">
+                        <button class="hashtag-chip" onclick="toggleHashtag(this)">#おはようREALITY</button>
+                        <button class="hashtag-chip" onclick="toggleHashtag(this)">#FilteredLook</button>
+                        <button class="hashtag-chip" onclick="toggleHashtag(this)">#DailyPost</button>
+                        <button class="hashtag-chip" onclick="toggleHashtag(this)">#PhotoOfTheDay</button>
+                        <button class="hashtag-chip" onclick="toggleHashtag(this)">#Drawing</button>
+                        <button class="hashtag-chip" onclick="toggleHashtag(this)">#AskMe</button>
+                        <button class="hashtag-chip" onclick="toggleHashtag(this)">#REALITYOutfit</button>
+                        <button class="hashtag-chip" onclick="toggleHashtag(this)">#NowStreaming</button>
+                        <button class="hashtag-chip" onclick="toggleHashtag(this)">#FirstPost</button>
+                        <button class="hashtag-chip" onclick="toggleHashtag(this)">#FeedPoll</button>
+                        <button class="hashtag-chip" onclick="toggleHashtag(this)">#ArtClub</button>
+                        <button class="hashtag-chip" onclick="toggleHashtag(this)">#MyRoom</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="create-actions">
+                <button class="btn-secondary" onclick="sharePost()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                    Compartir
+                </button>
+                <button class="btn-primary" id="postBtn" onclick="publishPost()">Postear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Discard Dialog -->
+    <div id="discardDialog" class="discard-dialog" onclick="handleDiscardOverlay(event)">
+        <div class="discard-content" onclick="event.stopPropagation()">
+            <h3 class="discard-title">¿Descartar cambios?</h3>
+            <p class="discard-text">Si cierras ahora, se perderán todos los cambios</p>
+            <div class="discard-actions">
+                <button class="btn-cancel" onclick="cancelDiscard()">Cancelar</button>
+                <button class="btn-discard" onclick="confirmDiscard()">Descartar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments Modal -->
+    <div id="commentsModal" class="comments-modal" onclick="closeComments(event)">
+        <div class="comments-content" onclick="event.stopPropagation()">
+            <div class="comments-header">
+                <h3 class="comments-title">Comentarios</h3>
+                <button class="comments-close" onclick="closeComments()">×</button>
+            </div>
+            <div id="commentsList" style="padding: 20px;">
+                <!-- Comments will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo
+        const samplePosts = [
+            {
+                id: 1,
+                username: "akazadono",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=akaza",
+                verified: true,
+                image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&h=600&fit=crop",
+                likes: 6,
+                caption: "que hago con mi vida xd",
+                hashtags: ["#おはようREALITY", "#FilteredLook", "#PhotoOfTheDay"],
+                time: "23h",
+                isNew: true,
+                liked: false,
+                saved: false,
+                isStaff: false
+            },
+            {
+                id: 2,
+                username: "RAYKO⚡PENDRAGON🌌",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=rayko",
+                verified: false,
+                image: "https://images.unsplash.com/photo-1634017839464-5c339ez0b41?w=600&h=600&fit=crop",
+                likes: 6,
+                caption: "Celebrando el aniversario! 🎉✨",
+                hashtags: ["#DailyPost", "#PhotoOfTheDay", "#REALITY7AndHalfYears", "#REALITYFrame"],
+                time: "22h",
+                isNew: false,
+                liked: false,
+                saved: false,
+                isStaff: false
+            },
+            {
+                id: 3,
+                username: "EstelarOfficial",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=estelar",
+                verified: true,
+                image: "https://images.unsplash.com/photo-1563089145-599997674d42?w=800&h=450&fit=crop",
+                likes: 234,
+                caption: "Nueva actualización disponible! Descubre todas las novedades que tenemos preparadas para ti. 🚀",
+                hashtags: ["#Update", "#Novedades", "#EstelarLatam"],
+                time: "2h",
+                isNew: true,
+                liked: true,
+                saved: true,
+                isStaff: true,
+                role: "Administrador"
+            },
+            {
+                id: 4,
+                username: "CommunityManager",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=cm",
+                verified: true,
+                image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=450&fit=crop",
+                likes: 567,
+                caption: "¡Evento especial este fin de semana! No te pierdas las recompensas exclusivas para todos los participantes. 🎁✨",
+                hashtags: ["#Evento", "#Comunidad", "#Recompensas"],
+                time: "5h",
+                isNew: true,
+                liked: false,
+                saved: false,
+                isStaff: true,
+                role: "Community Manager"
+            },
+            {
+                id: 5,
+                username: "SoporteTecnico",
+                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=soporte",
+                verified: true,
+                image: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=450&fit=crop",
+                likes: 89,
+                caption: "Mantenimiento programado: El servidor estará en mantenimiento el día de mañana de 2:00 AM a 4:00 AM (hora del servidor).",
+                hashtags: ["#Mantenimiento", "#Soporte"],
+                time: "1d",
+                isNew: false,
+                liked: false,
+                saved: false,
+                isStaff: true,
+                role: "Soporte Técnico"
+            }
+        ];
+
+        let posts = [];
+        let currentTab = 'recommended';
+        let selectedHashtags = new Set();
+        let hasChanges = false;
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPosts();
+        });
+
+        // Create Modal Functions
+        function openCreateModal() {
+            const modal = document.getElementById('createModal');
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            hasChanges = false;
         }
-        
-        document.body.removeChild(iframe);
-        document.body.removeChild(form);
-      };
-      
-      document.body.appendChild(form);
-      form.submit();
-    }
-  </script>
+
+        function closeCreateModal() {
+            if (hasChanges) {
+                showDiscardDialog();
+            } else {
+                hideCreateModal();
+            }
+        }
+
+        function hideCreateModal() {
+            const modal = document.getElementById('createModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+            resetForm();
+        }
+
+        function handleOverlayClick(event) {
+            if (event.target.id === 'createModal') {
+                closeCreateModal();
+            }
+        }
+
+        // Discard Dialog
+        function showDiscardDialog() {
+            document.getElementById('discardDialog').classList.add('show');
+        }
+
+        function hideDiscardDialog() {
+            document.getElementById('discardDialog').classList.remove('show');
+        }
+
+        function handleDiscardOverlay(event) {
+            if (event.target.id === 'discardDialog') {
+                hideDiscardDialog();
+            }
+        }
+
+        function cancelDiscard() {
+            hideDiscardDialog();
+        }
+
+        function confirmDiscard() {
+            hideDiscardDialog();
+            hideCreateModal();
+        }
+
+        // Image Upload
+        function selectImage() {
+            // Simular selección de imagen
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        showImagePreview(event.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        function showImagePreview(src) {
+            const area = document.getElementById('imageUploadArea');
+            const placeholder = document.getElementById('uploadPlaceholder');
+            const preview = document.getElementById('imagePreview');
+            const removeBtn = document.getElementById('removeImage');
+
+            area.classList.add('has-image');
+            placeholder.style.display = 'none';
+            preview.src = src;
+            preview.style.display = 'block';
+            removeBtn.style.display = 'flex';
+            hasChanges = true;
+        }
+
+        function removeImage(event) {
+            event.stopPropagation();
+            const area = document.getElementById('imageUploadArea');
+            const placeholder = document.getElementById('uploadPlaceholder');
+            const preview = document.getElementById('imagePreview');
+            const removeBtn = document.getElementById('removeImage');
+
+            area.classList.remove('has-image');
+            placeholder.style.display = 'flex';
+            preview.src = '';
+            preview.style.display = 'none';
+            removeBtn.style.display = 'none';
+            hasChanges = true;
+        }
+
+        // Caption
+        function updateCharCount() {
+            const input = document.getElementById('captionInput');
+            const count = document.getElementById('charCount');
+            const length = input.value.length;
+            
+            count.textContent = `${length}/240`;
+            
+            if (length > 200) {
+                count.classList.add('warning');
+            } else {
+                count.classList.remove('warning');
+            }
+
+            if (length > 0) {
+                hasChanges = true;
+            }
+        }
+
+        // Hashtags
+        function toggleHashtag(element) {
+            const hashtag = element.textContent;
+            
+            if (selectedHashtags.has(hashtag)) {
+                selectedHashtags.delete(hashtag);
+                element.classList.remove('selected');
+            } else {
+                selectedHashtags.add(hashtag);
+                element.classList.add('selected');
+            }
+            
+            hasChanges = true;
+        }
+
+        // Publish
+        function publishPost() {
+            const caption = document.getElementById('captionInput').value;
+            const hasImage = document.getElementById('imagePreview').style.display !== 'none';
+            
+            if (!hasImage && !caption) {
+                showToast('📷 Agrega una foto o escribe algo');
+                return;
+            }
+
+            // Simular publicación
+            showToast('✨ Publicación creada exitosamente');
+            hideCreateModal();
+            
+            // Aquí iría la lógica para enviar al servidor
+            console.log('Publicando:', {
+                caption: caption,
+                hashtags: Array.from(selectedHashtags),
+                hasImage: hasImage
+            });
+        }
+
+        function sharePost() {
+            showToast('📤 Opciones de compartir');
+        }
+
+        function resetForm() {
+            document.getElementById('captionInput').value = '';
+            updateCharCount();
+            removeImage({ stopPropagation: () => {} });
+            selectedHashtags.clear();
+            document.querySelectorAll('.hashtag-chip').forEach(chip => {
+                chip.classList.remove('selected');
+            });
+            hasChanges = false;
+        }
+
+        // Cargar posts
+        async function loadPosts() {
+            document.getElementById('loadingState').style.display = 'flex';
+            document.getElementById('errorState').style.display = 'none';
+            document.getElementById('postsContainer').style.display = 'none';
+
+            const spinner = document.getElementById('loadingSpinner');
+            const loadingText = document.getElementById('loadingText');
+            
+            if (currentTab === 'staff') {
+                spinner.classList.add('staff');
+                loadingText.textContent = 'Cargando anuncios oficiales...';
+            } else {
+                spinner.classList.remove('staff');
+                loadingText.textContent = 'Cargando publicaciones...';
+            }
+
+            try {
+                await new Promise(resolve => setTimeout(resolve, 800));
+                posts = samplePosts;
+                renderPosts();
+                
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('postsContainer').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('errorState').style.display = 'block';
+            }
+        }
+
+        // Renderizar posts
+        function renderPosts() {
+            const container = document.getElementById('postsContainer');
+            container.innerHTML = '';
+
+            let filteredPosts = [];
+
+            if (currentTab === 'recommended') {
+                filteredPosts = posts.filter(p => !p.isStaff);
+            } else if (currentTab === 'following') {
+                filteredPosts = posts.filter(p => !p.isStaff && p.following);
+            } else if (currentTab === 'staff') {
+                filteredPosts = posts.filter(p => p.isStaff);
+            }
+
+            if (filteredPosts.length === 0) {
+                renderEmptyState(container);
+                return;
+            }
+
+            if (currentTab === 'staff') {
+                const welcomeCard = document.createElement('div');
+                welcomeCard.className = 'staff-welcome';
+                welcomeCard.innerHTML = `
+                    <h2>📢 Comunicados Oficiales</h2>
+                    <p>Aquí encontrarás anuncios importantes, eventos especiales y actualizaciones directamente del equipo de Estelar Latam.</p>
+                `;
+                container.appendChild(welcomeCard);
+            }
+
+            filteredPosts.forEach(post => {
+                container.appendChild(createPostElement(post));
+            });
+        }
+
+        // Renderizar estado vacío
+        function renderEmptyState(container) {
+            if (currentTab === 'staff') {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="staff-empty-icon">📋</div>
+                        <h3 style="color: #667eea; margin-bottom: 8px; font-weight: 700;">Sin anuncios oficiales</h3>
+                        <p>No hay comunicados del staff en este momento.<br>¡Vuelve pronto para nuevas actualizaciones!</p>
+                    </div>
+                `;
+            } else if (currentTab === 'following') {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">👥</div>
+                        <p>No sigues a nadie todavía</p>
+                        <p style="font-size: 13px; margin-top: 8px;">Explora el feed recomendado para descubrir creadores</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📷</div>
+                        <p>No hay publicaciones para mostrar</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Crear elemento de post
+        function createPostElement(post) {
+            const article = document.createElement('article');
+            article.className = `post-card ${post.isStaff ? 'staff-post' : ''}`;
+            article.dataset.postId = post.id;
+
+            const hashtagsHtml = post.hashtags.map(tag => 
+                `<a href="#" class="hashtag" onclick="filterByHashtag('${tag}')">${tag}</a>`
+            ).join(' ');
+
+            let staffHeader = '';
+            let staffBadge = '';
+            
+            if (post.isStaff) {
+                staffHeader = `
+                    <div class="staff-header-banner">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        Comunicado Oficial
+                    </div>
+                `;
+                
+                staffBadge = `
+                    <div class="staff-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                        </svg>
+                        STAFF
+                    </div>
+                `;
+            }
+
+            const newBadge = (!post.isStaff && post.isNew) ? '<span class="new-badge">Nuevo</span>' : '';
+
+            const verifiedBadge = post.verified ? 
+                `<span class="verified-badge ${post.isStaff ? 'staff' : ''}">✓</span>` : '';
+            
+            const userRole = post.isStaff ? 
+                `<span class="user-role">${post.role}</span>` : 
+                `<span class="post-time">Hace ${post.time}</span>`;
+
+            article.innerHTML = `
+                ${staffHeader}
+                <div class="post-header">
+                    <a href="#" class="post-user" onclick="viewProfile('${post.username}')">
+                        <img src="${post.avatar}" alt="${post.username}" class="user-avatar">
+                        <div class="user-info">
+                            <span class="username">
+                                ${post.username}
+                                ${verifiedBadge}
+                            </span>
+                            ${userRole}
+                        </div>
+                    </a>
+                    <button class="post-menu" onclick="showPostMenu(${post.id})">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="5" r="2"></circle>
+                            <circle cx="12" cy="12" r="2"></circle>
+                            <circle cx="12" cy="19" r="2"></circle>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="post-image-container" ondblclick="handleDoubleTap(${post.id})">
+                    ${staffBadge}
+                    ${newBadge}
+                    <img src="${post.image}" alt="Post" class="post-image" loading="lazy">
+                    <div class="heart-animation" id="heart-${post.id}">❤️</div>
+                </div>
+                
+                <div class="post-actions">
+                    <div class="action-group">
+                        <button class="action-btn ${post.liked ? 'liked' : ''}" onclick="toggleLike(${post.id})" id="like-btn-${post.id}">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
+                        <button class="action-btn" onclick="openComments(${post.id})">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                            </svg>
+                        </button>
+                        <button class="action-btn" onclick="sharePost(${post.id})">
+                            <svg viewBox="0 0 24 24">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                    </div>
+                    <button class="action-btn ${post.saved ? 'saved' : ''}" onclick="toggleSave(${post.id})" id="save-btn-${post.id}">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="post-content">
+                    <div class="likes-count" id="likes-${post.id}">${post.likes} Me gusta</div>
+                    <div class="post-caption">
+                        <span class="username">${post.username}</span>
+                        ${post.caption}
+                    </div>
+                    <div class="hashtags">${hashtagsHtml}</div>
+                    <div class="view-comments" onclick="openComments(${post.id})">Ver comentarios</div>
+                    <div class="post-date">Hace ${post.time}</div>
+                </div>
+            `;
+
+            return article;
+        }
+
+        // Cambiar tab
+        function switchTab(tab, element) {
+            currentTab = tab;
+            
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            element.classList.add('active');
+            
+            loadPosts();
+        }
+
+        // Like functionality
+        function toggleLike(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            post.liked = !post.liked;
+            post.likes += post.liked ? 1 : -1;
+
+            const btn = document.getElementById(`like-btn-${postId}`);
+            const likesCount = document.getElementById(`likes-${postId}`);
+            
+            if (post.liked) {
+                btn.classList.add('liked');
+                const message = post.isStaff ? '❤️ Te gusta este anuncio oficial' : '❤️ Te gusta esta publicación';
+                showToast(message);
+            } else {
+                btn.classList.remove('liked');
+            }
+            
+            likesCount.textContent = `${post.likes} Me gusta`;
+        }
+
+        // Double tap to like
+        function handleDoubleTap(postId) {
+            const heart = document.getElementById(`heart-${postId}`);
+            heart.classList.add('show');
+            
+            setTimeout(() => heart.classList.remove('show'), 800);
+            
+            const post = posts.find(p => p.id === postId);
+            if (post && !post.liked) {
+                toggleLike(postId);
+            }
+        }
+
+        // Save functionality
+        function toggleSave(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            post.saved = !post.saved;
+            
+            const btn = document.getElementById(`save-btn-${postId}`);
+            if (post.saved) {
+                btn.classList.add('saved');
+                const message = post.isStaff ? '💾 Anuncio guardado' : '💾 Guardado en colección';
+                showToast(message);
+            } else {
+                btn.classList.remove('saved');
+                showToast('🗑️ Eliminado de guardados');
+            }
+        }
+
+        // Navigation
+        function setActiveNav(element) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Comments modal
+        function openComments(postId) {
+            const modal = document.getElementById('commentsModal');
+            const list = document.getElementById('commentsList');
+            const post = posts.find(p => p.id === postId);
+            
+            const title = post && post.isStaff ? 'Comentarios Oficiales' : 'Comentarios';
+            document.querySelector('.comments-title').textContent = title;
+            
+            list.innerHTML = `
+                <div style="text-align: center; color: #636e72; padding: 40px;">
+                    <div style="font-size: 32px; margin-bottom: 10px;">💬</div>
+                    <p>No hay comentarios aún</p>
+                    <p style="font-size: 13px; margin-top: 8px;">Sé el primero en comentar</p>
+                </div>
+            `;
+            
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeComments(event) {
+            if (!event || event.target.id === 'commentsModal' || event.target.classList.contains('comments-close')) {
+                document.getElementById('commentsModal').classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Otras funciones
+        function showNotifications() {
+            showToast('🔔 Notificaciones');
+        }
+
+        function viewProfile(username) {
+            showToast(`👤 Perfil de ${username}`);
+        }
+
+        function showPostMenu(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post && post.isStaff) {
+                showToast('⚙️ Opciones del anuncio oficial');
+            } else {
+                showToast('⚙️ Opciones del post');
+            }
+        }
+
+        function filterByHashtag(tag) {
+            showToast(`#️⃣ Filtrando por ${tag}`);
+        }
+
+        // Touch feedback
+        document.addEventListener('touchstart', function() {}, {passive: true});
+    </script>
 </body>
 </html>
