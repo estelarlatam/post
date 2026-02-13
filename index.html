@@ -1741,147 +1741,140 @@
     </div>
 
     <script>
-        // URLs base para redirecciones
+        // ==========================================
+        // CONFIGURACIÓN DE LA API DE GOOGLE APPS SCRIPT
+        // ==========================================
+        
+        // URL DE TU API DESPLEGADA (reemplaza con tu URL real)
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwHHz3cRojiD12-gBGKWAN4B0RHbNubZ1tR6tGIMdM6XLUxccjKZTebjBsTTG_cxHG7/exec';
+        
+        // ID del usuario actualmente logueado (obtener de tu sistema de autenticación)
+        const CURRENT_USER_ID = 'u001'; 
+        
+        // ==========================================
+        // FUNCIONES DE LA API
+        // ==========================================
+        
+        // Función para llamar a tu API específica (GET)
+        async function callAPI(action, params = {}) {
+            const url = new URL(API_URL);
+            url.searchParams.append('action', action);
+            url.searchParams.append('userId', CURRENT_USER_ID);
+            
+            Object.keys(params).forEach(key => {
+                url.searchParams.append(key, params[key]);
+            });
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error en callAPI:', error);
+                throw error;
+            }
+        }
+        
+        // Subir imagen a ImgBB a través de tu API (POST)
+        async function uploadImage(base64Image, name = 'post') {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'uploadImage',
+                        userId: CURRENT_USER_ID,
+                        image: base64Image,
+                        name: name
+                    })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Error subiendo imagen:', error);
+                throw error;
+            }
+        }
+        
+        // Crear nuevo post a través de la API
+        async function createPostAPI(caption, imageUrl, hashtags) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'createPost',
+                        userId: CURRENT_USER_ID,
+                        caption: caption,
+                        image: imageUrl,
+                        hashtags: hashtags
+                    })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Error creando post:', error);
+                throw error;
+            }
+        }
+        
+        // Dar like a un post
+        async function likePostAPI(postId) {
+            return await callAPI('likePost', { postId: postId });
+        }
+        
+        // Guardar post
+        async function savePostAPI(postId) {
+            return await callAPI('savePost', { postId: postId });
+        }
+        
+        // Agregar comentario
+        async function addCommentAPI(postId, text) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'addComment',
+                        userId: CURRENT_USER_ID,
+                        postId: postId,
+                        text: text
+                    })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Error agregando comentario:', error);
+                throw error;
+            }
+        }
+        
+        // Obtener posts del feed
+        async function getFeedAPI(type = 'recommended') {
+            return await callAPI('getFeed', { type: type });
+        }
+        
+        // Obtener comentarios de un post
+        async function getCommentsAPI(postId) {
+            return await callAPI('getComments', { postId: postId });
+        }
+
+        // ==========================================
+        // VARIABLES GLOBALES Y ESTADO
+        // ==========================================
+        
         const BASE_URL = 'https://estelarlatam.com';
         
-        // Usuario actual (simulado)
-        const currentUser = {
-            id: 'currentUser',
+        // Usuario actual (se cargará desde la API)
+        let currentUser = {
+            id: CURRENT_USER_ID,
             username: 'Tú',
             avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=currentUser',
             verified: false
         };
-
-        // Datos de ejemplo con comentarios
-        const samplePosts = [
-            {
-                id: 1,
-                username: "akazadono",
-                userId: "akazadono123",
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=akaza",
-                verified: true,
-                image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&h=600&fit=crop",
-                likes: 6,
-                caption: "que hago con mi vida xd",
-                hashtags: ["#おはようREALITY", "#FilteredLook", "#PhotoOfTheDay"],
-                time: "23h",
-                isNew: true,
-                liked: false,
-                saved: false,
-                isStaff: false,
-                comments: [
-                    {
-                        id: 101,
-                        userId: "user456",
-                        username: "MARÍA TERESA",
-                        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=maria",
-                        verified: true,
-                        text: "🌹🌹🌹🌹🌹",
-                        time: "Hace 4 h"
-                    }
-                ]
-            },
-            {
-                id: 2,
-                username: "RAYKO⚡PENDRAGON🌌",
-                userId: "rayko456",
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=rayko",
-                verified: false,
-                image: "https://images.unsplash.com/photo-1634017839464-5c339ez0b41?w=600&h=600&fit=crop",
-                likes: 6,
-                caption: "Celebrando el aniversario! 🎉✨",
-                hashtags: ["#DailyPost", "#PhotoOfTheDay", "#REALITY7AndHalfYears", "#REALITYFrame"],
-                time: "22h",
-                isNew: false,
-                liked: false,
-                saved: false,
-                isStaff: false,
-                comments: []
-            },
-            {
-                id: 3,
-                username: "EstelarOfficial",
-                userId: "estelar789",
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=estelar",
-                verified: true,
-                image: "https://images.unsplash.com/photo-1563089145-599997674d42?w=800&h=450&fit=crop",
-                likes: 234,
-                caption: "Nueva actualización disponible! Descubre todas las novedades que tenemos preparadas para ti. 🚀",
-                hashtags: ["#Update", "#Novedades", "#EstelarLatam"],
-                time: "2h",
-                isNew: true,
-                liked: true,
-                saved: true,
-                isStaff: true,
-                role: "Administrador",
-                comments: [
-                    {
-                        id: 201,
-                        userId: "user789",
-                        username: "FanEstelar",
-                        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=fan",
-                        verified: false,
-                        text: "¡Emocionado por la actualización! 🎉",
-                        time: "Hace 1 h"
-                    },
-                    {
-                        id: 202,
-                        userId: "user101",
-                        username: "GamerPro",
-                        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=gamer",
-                        verified: true,
-                        text: "¿Cuándo estará disponible para todos?",
-                        time: "Hace 30 min"
-                    }
-                ]
-            },
-            {
-                id: 4,
-                username: "CommunityManager",
-                userId: "cm101",
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=cm",
-                verified: true,
-                image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=450&fit=crop",
-                likes: 567,
-                caption: "¡Evento especial este fin de semana! No te pierdas las recompensas exclusivas para todos los participantes. 🎁✨",
-                hashtags: ["#Evento", "#Comunidad", "#Recompensas"],
-                time: "5h",
-                isNew: true,
-                liked: false,
-                saved: false,
-                isStaff: true,
-                role: "Community Manager",
-                comments: []
-            },
-            {
-                id: 5,
-                username: "SoporteTecnico",
-                userId: "soporte202",
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=soporte",
-                verified: true,
-                image: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=450&fit=crop",
-                likes: 89,
-                caption: "Mantenimiento programado: El servidor estará en mantenimiento el día de mañana de 2:00 AM a 4:00 AM (hora del servidor).",
-                hashtags: ["#Mantenimiento", "#Soporte"],
-                time: "1d",
-                isNew: false,
-                liked: false,
-                saved: false,
-                isStaff: true,
-                role: "Soporte Técnico",
-                comments: [
-                    {
-                        id: 301,
-                        userId: "user303",
-                        username: "UsuarioCurioso",
-                        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=curious",
-                        verified: false,
-                        text: "¿Afectará el progreso guardado?",
-                        time: "Hace 12 h"
-                    }
-                ]
-            }
-        ];
 
         let posts = [];
         let currentTab = 'recommended';
@@ -1890,13 +1883,38 @@
         let isModalOpen = false;
         let currentPostId = null;
         let openCommentMenuId = null;
+        let currentImageBase64 = null; // Para almacenar la imagen seleccionada
 
-        // Inicializar
+        // ==========================================
+        // INICIALIZACIÓN
+        // ==========================================
+        
         document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
             loadPosts();
         });
 
-        // Create Modal Functions
+        // Cargar datos del usuario actual
+        async function loadUserData() {
+            try {
+                const userData = await callAPI('getUserData');
+                if (userData && userData.success) {
+                    currentUser = {
+                        ...currentUser,
+                        ...userData.user
+                    };
+                    // Actualizar avatar en el modal de comentarios
+                    document.getElementById('currentUserAvatar').src = currentUser.avatar;
+                }
+            } catch (error) {
+                console.error('Error cargando datos de usuario:', error);
+            }
+        }
+
+        // ==========================================
+        // CREATE POST MODAL
+        // ==========================================
+        
         function openCreateModal() {
             if (isModalOpen) return;
             
@@ -1952,7 +1970,10 @@
             hideCreateModal();
         }
 
-        // Image Upload
+        // ==========================================
+        // IMAGE UPLOAD CON INTEGRACIÓN API
+        // ==========================================
+        
         function selectImage() {
             const input = document.createElement('input');
             input.type = 'file';
@@ -1960,8 +1981,15 @@
             input.onchange = function(e) {
                 const file = e.target.files[0];
                 if (file) {
+                    // Validar tamaño (máximo 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        showToast('❌ La imagen es demasiado grande (máx 5MB)');
+                        return;
+                    }
+                    
                     const reader = new FileReader();
                     reader.onload = function(event) {
+                        currentImageBase64 = event.target.result;
                         showImagePreview(event.target.result);
                     };
                     reader.readAsDataURL(file);
@@ -1996,10 +2024,14 @@
             preview.src = '';
             preview.style.display = 'none';
             removeBtn.style.display = 'none';
+            currentImageBase64 = null;
             hasChanges = true;
         }
 
-        // Caption
+        // ==========================================
+        // CAPTION Y HASHTAGS
+        // ==========================================
+        
         function updateCharCount() {
             const input = document.getElementById('captionInput');
             const count = document.getElementById('charCount');
@@ -2018,7 +2050,6 @@
             }
         }
 
-        // Hashtags
         function toggleHashtag(element) {
             const hashtag = element.textContent;
             
@@ -2033,8 +2064,11 @@
             hasChanges = true;
         }
 
-        // Publish
-        function publishPost() {
+        // ==========================================
+        // PUBLICAR POST CON INTEGRACIÓN API
+        // ==========================================
+        
+        async function publishPost() {
             const caption = document.getElementById('captionInput').value;
             const hasImage = document.getElementById('imagePreview').style.display !== 'none';
             
@@ -2043,8 +2077,50 @@
                 return;
             }
 
-            showToast('✨ Publicación creada exitosamente');
-            hideCreateModal();
+            // Deshabilitar botón durante la publicación
+            const postBtn = document.getElementById('postBtn');
+            postBtn.disabled = true;
+            postBtn.textContent = 'Publicando...';
+            
+            try {
+                let imageUrl = null;
+                
+                // Si hay imagen, subirla primero a ImgBB
+                if (currentImageBase64) {
+                    showToast('📤 Subiendo imagen...');
+                    const uploadResult = await uploadImage(currentImageBase64, `post_${Date.now()}`);
+                    
+                    if (uploadResult.success) {
+                        imageUrl = uploadResult.url;
+                    } else {
+                        throw new Error('Error subiendo imagen');
+                    }
+                }
+                
+                // Crear el post en la base de datos
+                showToast('📝 Creando publicación...');
+                const hashtagsArray = Array.from(selectedHashtags);
+                const result = await createPostAPI(caption, imageUrl, hashtagsArray);
+                
+                if (result.success) {
+                    showToast('✨ Publicación creada exitosamente');
+                    hideCreateModal();
+                    
+                    // Recargar posts para mostrar el nuevo
+                    setTimeout(() => {
+                        loadPosts();
+                    }, 500);
+                } else {
+                    throw new Error(result.error || 'Error creando post');
+                }
+                
+            } catch (error) {
+                console.error('Error publicando:', error);
+                showToast('❌ Error al publicar: ' + error.message);
+            } finally {
+                postBtn.disabled = false;
+                postBtn.textContent = 'Postear';
+            }
         }
 
         function sharePost() {
@@ -2066,6 +2142,7 @@
             preview.style.display = 'none';
             removeBtn.style.display = 'none';
             
+            currentImageBase64 = null;
             selectedHashtags.clear();
             document.querySelectorAll('.hashtag-chip').forEach(chip => {
                 chip.classList.remove('selected');
@@ -2073,7 +2150,10 @@
             hasChanges = false;
         }
 
-        // Cargar posts
+        // ==========================================
+        // CARGAR POSTS DESDE LA API
+        // ==========================================
+        
         async function loadPosts() {
             document.getElementById('loadingState').style.display = 'flex';
             document.getElementById('errorState').style.display = 'none';
@@ -2091,21 +2171,114 @@
             }
 
             try {
-                await new Promise(resolve => setTimeout(resolve, 800));
-                posts = samplePosts;
+                // Llamar a la API para obtener posts
+                const result = await getFeedAPI(currentTab);
+                
+                if (result.success) {
+                    posts = result.posts || [];
+                } else {
+                    // Si falla la API, usar datos de ejemplo para demo
+                    console.warn('API no disponible, usando datos de ejemplo');
+                    posts = getSamplePosts();
+                }
+                
                 renderPosts();
                 
                 document.getElementById('loadingState').style.display = 'none';
                 document.getElementById('postsContainer').style.display = 'block';
                 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error cargando posts:', error);
+                // En caso de error, mostrar datos de ejemplo
+                posts = getSamplePosts();
+                renderPosts();
                 document.getElementById('loadingState').style.display = 'none';
-                document.getElementById('errorState').style.display = 'block';
+                document.getElementById('postsContainer').style.display = 'block';
             }
         }
 
-        // Renderizar posts
+        // Datos de ejemplo para cuando la API no está disponible
+        function getSamplePosts() {
+            return [
+                {
+                    id: 1,
+                    username: "akazadono",
+                    userId: "akazadono123",
+                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=akaza",
+                    verified: true,
+                    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&h=600&fit=crop",
+                    likes: 6,
+                    caption: "que hago con mi vida xd",
+                    hashtags: ["#おはようREALITY", "#FilteredLook", "#PhotoOfTheDay"],
+                    time: "23h",
+                    isNew: true,
+                    liked: false,
+                    saved: false,
+                    isStaff: false,
+                    comments: [
+                        {
+                            id: 101,
+                            userId: "user456",
+                            username: "MARÍA TERESA",
+                            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=maria",
+                            verified: true,
+                            text: "🌹🌹🌹🌹🌹",
+                            time: "Hace 4 h"
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    username: "RAYKO⚡PENDRAGON🌌",
+                    userId: "rayko456",
+                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=rayko",
+                    verified: false,
+                    image: "https://images.unsplash.com/photo-1634017839464-5c339ez0b41?w=600&h=600&fit=crop",
+                    likes: 6,
+                    caption: "Celebrando el aniversario! 🎉✨",
+                    hashtags: ["#DailyPost", "#PhotoOfTheDay", "#REALITY7AndHalfYears", "#REALITYFrame"],
+                    time: "22h",
+                    isNew: false,
+                    liked: false,
+                    saved: false,
+                    isStaff: false,
+                    comments: []
+                },
+                {
+                    id: 3,
+                    username: "EstelarOfficial",
+                    userId: "estelar789",
+                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=estelar",
+                    verified: true,
+                    image: "https://images.unsplash.com/photo-1563089145-599997674d42?w=800&h=450&fit=crop",
+                    likes: 234,
+                    caption: "Nueva actualización disponible! Descubre todas las novedades que tenemos preparadas para ti. 🚀",
+                    hashtags: ["#Update", "#Novedades", "#EstelarLatam"],
+                    time: "2h",
+                    isNew: true,
+                    liked: true,
+                    saved: true,
+                    isStaff: true,
+                    role: "Administrador",
+                    comments: [
+                        {
+                            id: 201,
+                            userId: "user789",
+                            username: "FanEstelar",
+                            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=fan",
+                            verified: false,
+                            text: "¡Emocionado por la actualización! 🎉",
+                            time: "Hace 1 h"
+                        }
+                    ]
+                }
+            ];
+        }
+
+        // ==========================================
+        // RENDERIZAR POSTS
+        // ==========================================
+        
         function renderPosts() {
             const container = document.getElementById('postsContainer');
             container.innerHTML = '';
@@ -2140,7 +2313,6 @@
             });
         }
 
-        // Renderizar estado vacío
         function renderEmptyState(container) {
             if (currentTab === 'staff') {
                 container.innerHTML = `
@@ -2168,7 +2340,6 @@
             }
         }
 
-        // Crear elemento de post
         function createPostElement(post) {
             const article = document.createElement('article');
             article.className = `post-card ${post.isStaff ? 'staff-post' : ''}`;
@@ -2254,7 +2425,7 @@
                             </svg>
                             ${commentCount > 0 ? `<span class="comment-count">${commentCount}</span>` : ''}
                         </button>
-                        <button class="action-btn" onclick="sharePost(${post.id})">
+                        <button class="action-btn" onclick="sharePostById(${post.id})">
                             <svg viewBox="0 0 24 24">
                                 <line x1="22" y1="2" x2="11" y2="13"></line>
                                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -2285,21 +2456,22 @@
             return article;
         }
 
-        // Abrir perfil de usuario en nueva pestaña
         function openUserProfile(userId) {
             const url = `${BASE_URL}/perfil/${userId}`;
             window.open(url, '_blank');
         }
 
-        // Abrir página de hashtag en nueva pestaña
         function openHashtagPage(hashtag) {
             const tag = hashtag.replace('#', '');
             const url = `${BASE_URL}/hashtag/${tag}`;
             window.open(url, '_blank');
         }
 
-        // Comments System
-        function openComments(postId) {
+        // ==========================================
+        // SISTEMA DE COMENTARIOS CON API
+        // ==========================================
+        
+        async function openComments(postId) {
             currentPostId = postId;
             const post = posts.find(p => p.id === postId);
             if (!post) return;
@@ -2310,13 +2482,25 @@
             
             title.textContent = post.isStaff ? 'Comentarios Oficiales' : 'Comentarios';
             
-            renderCommentsList(post.comments);
+            // Mostrar comentarios locales mientras se cargan los de la API
+            renderCommentsList(post.comments || []);
             
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
             
             // Actualizar avatar del usuario actual
             document.getElementById('currentUserAvatar').src = currentUser.avatar;
+            
+            // Cargar comentarios actualizados desde la API
+            try {
+                const result = await getCommentsAPI(postId);
+                if (result.success && result.comments) {
+                    post.comments = result.comments;
+                    renderCommentsList(post.comments);
+                }
+            } catch (error) {
+                console.error('Error cargando comentarios:', error);
+            }
         }
 
         function renderCommentsList(comments) {
@@ -2377,7 +2561,6 @@
         function toggleCommentMenu(commentId, event) {
             event.stopPropagation();
             
-            // Cerrar menú anterior si existe
             if (openCommentMenuId && openCommentMenuId !== commentId) {
                 const prevMenu = document.getElementById(`comment-menu-${openCommentMenuId}`);
                 if (prevMenu) prevMenu.classList.remove('show');
@@ -2393,7 +2576,6 @@
             }
         }
 
-        // Cerrar menús al hacer clic fuera
         document.addEventListener('click', function(event) {
             if (openCommentMenuId) {
                 const menu = document.getElementById(`comment-menu-${openCommentMenuId}`);
@@ -2426,7 +2608,6 @@
             document.body.style.overflow = '';
             currentPostId = null;
             
-            // Cerrar menú abierto si existe
             if (openCommentMenuId) {
                 const menu = document.getElementById(`comment-menu-${openCommentMenuId}`);
                 if (menu) menu.classList.remove('show');
@@ -2440,7 +2621,7 @@
             }
         }
 
-        function submitComment() {
+        async function submitComment() {
             const input = document.getElementById('commentInput');
             const text = input.value.trim();
             
@@ -2449,41 +2630,66 @@
             const post = posts.find(p => p.id === currentPostId);
             if (!post) return;
             
-            // Crear nuevo comentario
-            const newComment = {
-                id: Date.now(),
-                userId: currentUser.id,
-                username: currentUser.username,
-                avatar: currentUser.avatar,
-                verified: currentUser.verified,
-                text: text,
-                time: 'Justo ahora'
-            };
+            // Deshabilitar input mientras se envía
+            input.disabled = true;
             
-            // Agregar al post
-            if (!post.comments) post.comments = [];
-            post.comments.push(newComment);
-            
-            // Limpiar input
-            input.value = '';
-            
-            // Actualizar vista
-            renderCommentsList(post.comments);
-            
-            // Actualizar contador en el post
-            updatePostCommentCount(currentPostId, post.comments.length);
-            
-            showToast('💬 Comentario publicado');
+            try {
+                // Enviar comentario a la API
+                const result = await addCommentAPI(currentPostId, text);
+                
+                if (result.success && result.comment) {
+                    // Agregar el comentario devuelto por la API
+                    if (!post.comments) post.comments = [];
+                    post.comments.push(result.comment);
+                    
+                    // Limpiar input
+                    input.value = '';
+                    
+                    // Actualizar vista
+                    renderCommentsList(post.comments);
+                    
+                    // Actualizar contador en el post
+                    updatePostCommentCount(currentPostId, post.comments.length);
+                    
+                    showToast('💬 Comentario publicado');
+                } else {
+                    throw new Error(result.error || 'Error al publicar comentario');
+                }
+                
+            } catch (error) {
+                console.error('Error enviando comentario:', error);
+                showToast('❌ Error al publicar comentario');
+                
+                // Fallback: agregar comentario localmente para demo
+                const newComment = {
+                    id: Date.now(),
+                    userId: currentUser.id,
+                    username: currentUser.username,
+                    avatar: currentUser.avatar,
+                    verified: currentUser.verified,
+                    text: text,
+                    time: 'Justo ahora'
+                };
+                
+                if (!post.comments) post.comments = [];
+                post.comments.push(newComment);
+                input.value = '';
+                renderCommentsList(post.comments);
+                updatePostCommentCount(currentPostId, post.comments.length);
+                showToast('💬 Comentario publicado (modo offline)');
+                
+            } finally {
+                input.disabled = false;
+                input.focus();
+            }
         }
 
         function updatePostCommentCount(postId, count) {
-            // Actualizar el badge en el botón de comentarios
             const postCard = document.querySelector(`[data-post-id="${postId}"]`);
             if (postCard) {
                 const commentBtn = postCard.querySelector('.action-btn:nth-child(2)');
                 const viewComments = postCard.querySelector('.view-comments');
                 
-                // Actualizar o crear badge
                 let badge = commentBtn.querySelector('.comment-count');
                 if (!badge) {
                     badge = document.createElement('span');
@@ -2492,12 +2698,14 @@
                 }
                 badge.textContent = count;
                 
-                // Actualizar texto
                 viewComments.textContent = count > 0 ? `Ver los ${count} comentarios` : 'Ver comentarios';
             }
         }
 
-        // Cambiar tab
+        // ==========================================
+        // INTERACCIONES CON API
+        // ==========================================
+        
         function switchTab(tab, element) {
             currentTab = tab;
             
@@ -2507,12 +2715,13 @@
             loadPosts();
         }
 
-        // Like functionality
-        function toggleLike(postId) {
+        async function toggleLike(postId) {
             const post = posts.find(p => p.id === postId);
             if (!post) return;
 
-            post.liked = !post.liked;
+            // Optimistic update
+            const wasLiked = post.liked;
+            post.liked = !wasLiked;
             post.likes += post.liked ? 1 : -1;
 
             const btn = document.getElementById(`like-btn-${postId}`);
@@ -2520,16 +2729,36 @@
             
             if (post.liked) {
                 btn.classList.add('liked');
-                const message = post.isStaff ? '❤️ Te gusta este anuncio oficial' : '❤️ Te gusta esta publicación';
-                showToast(message);
             } else {
                 btn.classList.remove('liked');
             }
             
             likesCount.textContent = `${post.likes} Me gusta`;
+            
+            // Llamar a la API
+            try {
+                const result = await likePostAPI(postId);
+                if (!result.success) {
+                    // Revertir si falla
+                    post.liked = wasLiked;
+                    post.likes += wasLiked ? 1 : -1;
+                    if (post.liked) {
+                        btn.classList.add('liked');
+                    } else {
+                        btn.classList.remove('liked');
+                    }
+                    likesCount.textContent = `${post.likes} Me gusta`;
+                    showToast('❌ Error al dar like');
+                } else {
+                    const message = post.isStaff ? '❤️ Te gusta este anuncio oficial' : '❤️ Te gusta esta publicación';
+                    showToast(message);
+                }
+            } catch (error) {
+                console.error('Error en like:', error);
+                // No revertir en error de red, asumir que se sincronizará luego
+            }
         }
 
-        // Double tap to like
         function handleDoubleTap(postId) {
             const heart = document.getElementById(`heart-${postId}`);
             heart.classList.add('show');
@@ -2542,31 +2771,66 @@
             }
         }
 
-        // Save functionality
-        function toggleSave(postId) {
+        async function toggleSave(postId) {
             const post = posts.find(p => p.id === postId);
             if (!post) return;
 
-            post.saved = !post.saved;
+            const wasSaved = post.saved;
+            post.saved = !wasSaved;
             
             const btn = document.getElementById(`save-btn-${postId}`);
             if (post.saved) {
                 btn.classList.add('saved');
-                const message = post.isStaff ? '💾 Anuncio guardado' : '💾 Guardado en colección';
-                showToast(message);
             } else {
                 btn.classList.remove('saved');
-                showToast('🗑️ Eliminado de guardados');
+            }
+            
+            try {
+                const result = await savePostAPI(postId);
+                if (!result.success) {
+                    // Revertir
+                    post.saved = wasSaved;
+                    if (post.saved) {
+                        btn.classList.add('saved');
+                    } else {
+                        btn.classList.remove('saved');
+                    }
+                    showToast('❌ Error al guardar');
+                } else {
+                    if (post.saved) {
+                        const message = post.isStaff ? '💾 Anuncio guardado' : '💾 Guardado en colección';
+                        showToast(message);
+                    } else {
+                        showToast('🗑️ Eliminado de guardados');
+                    }
+                }
+            } catch (error) {
+                console.error('Error guardando:', error);
             }
         }
 
-        // Navigation
+        function sharePostById(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                // Copiar enlace al portapapeles
+                const url = `${BASE_URL}/post/${postId}`;
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('📤 Enlace copiado al portapapeles');
+                }).catch(() => {
+                    showToast('📤 Compartiendo post...');
+                });
+            }
+        }
+
+        // ==========================================
+        // UTILIDADES
+        // ==========================================
+        
         function setActiveNav(element) {
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             element.classList.add('active');
         }
 
-        // Toast
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -2575,7 +2839,6 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // Otras funciones
         function showPostMenu(postId) {
             const post = posts.find(p => p.id === postId);
             if (post && post.isStaff) {
