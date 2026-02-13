@@ -67,6 +67,8 @@
             border-radius: 50%;
             transition: all 0.3s ease;
             position: relative;
+            text-decoration: none;
+            color: inherit;
         }
 
         .header-btn:hover {
@@ -465,6 +467,7 @@
         .action-group {
             display: flex;
             gap: 16px;
+            align-items: center;
         }
 
         .action-btn {
@@ -478,6 +481,7 @@
             align-items: center;
             justify-content: center;
             transition: transform 0.2s;
+            position: relative;
         }
 
         .action-btn:active {
@@ -507,6 +511,21 @@
         .action-btn.saved svg {
             fill: #2d3436;
             stroke: #2d3436;
+        }
+
+        /* Comment Count Badge */
+        .comment-count {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
         }
 
         /* Post Content */
@@ -543,6 +562,11 @@
 
         .post-caption .username {
             margin-right: 6px;
+            cursor: pointer;
+        }
+
+        .post-caption .username:hover {
+            text-decoration: underline;
         }
 
         .post-caption a {
@@ -769,7 +793,7 @@
             opacity: 1;
         }
 
-        /* Create Post Modal - CORREGIDO */
+        /* Create Post Modal */
         .create-modal-overlay {
             display: none;
             position: fixed;
@@ -1162,7 +1186,7 @@
             background: #fff5f5;
         }
 
-        /* Comments Modal */
+        /* Comments Modal - MEJORADO */
         .comments-modal-overlay {
             display: none;
             position: fixed;
@@ -1188,8 +1212,10 @@
             right: 0;
             background: white;
             border-radius: 20px 20px 0 0;
-            max-height: 80vh;
-            overflow-y: auto;
+            max-height: 85vh;
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
             transform: translateY(100%);
             transition: transform 0.3s;
         }
@@ -1204,15 +1230,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 10;
+            flex-shrink: 0;
         }
 
         .comments-title {
             font-weight: 700;
-            font-size: 16px;
+            font-size: 18px;
+            color: #2d3436;
         }
 
         .comments-close {
@@ -1227,6 +1251,216 @@
             justify-content: center;
             font-size: 18px;
             color: #636e72;
+        }
+
+        /* Comments List */
+        .comments-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .comment-username {
+            font-weight: 700;
+            font-size: 14px;
+            color: #2d3436;
+            cursor: pointer;
+        }
+
+        .comment-username:hover {
+            text-decoration: underline;
+        }
+
+        .verified-badge-small {
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #b2bec3;
+        }
+
+        .comment-text {
+            font-size: 14px;
+            color: #2d3436;
+            line-height: 1.5;
+            margin-bottom: 4px;
+        }
+
+        .comment-menu-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .comment-menu-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .comment-menu-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: #636e72;
+        }
+
+        /* Comment Options Menu */
+        .comment-options {
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 8px 0;
+            min-width: 150px;
+            z-index: 100;
+            display: none;
+        }
+
+        .comment-options.show {
+            display: block;
+        }
+
+        .comment-option {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #2d3436;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .comment-option:hover {
+            background: #f8f9fa;
+        }
+
+        .comment-option.delete {
+            color: #ff4757;
+        }
+
+        /* Empty Comments */
+        .empty-comments {
+            text-align: center;
+            padding: 60px 20px;
+            color: #b2bec3;
+        }
+
+        .empty-comments-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        /* Comment Input Section */
+        .comment-input-section {
+            border-top: 1px solid #e0e0e0;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            flex-shrink: 0;
+        }
+
+        .current-user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .comment-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 24px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .comment-input:focus {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        }
+
+        .comment-submit {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+
+        .comment-submit:hover {
+            transform: scale(1.1);
+        }
+
+        .comment-submit:active {
+            transform: scale(0.95);
+        }
+
+        .comment-submit svg {
+            width: 18px;
+            height: 18px;
+            stroke: white;
+            stroke-width: 2.5;
+            fill: none;
         }
 
         /* Staff Welcome Card */
@@ -1271,7 +1505,6 @@
             height: 0;
         }
     </style>
-<base target="_blank">
 </head>
 <body>
     <svg class="svg-defs">
@@ -1288,13 +1521,13 @@
         <header class="header">
             <h1>Feed</h1>
             <div class="header-actions">
-                <button class="header-btn" onclick="showNotifications()">
+                <a href="https://estelarlatam.com/notificaciones" target="_blank" class="header-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                     </svg>
                     <span class="notification-dot"></span>
-                </button>
+                </a>
                 <button class="header-btn" onclick="openCreateModal()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -1472,15 +1705,37 @@
         </div>
     </div>
 
-    <!-- Comments Modal -->
-    <div id="commentsModalOverlay" class="comments-modal-overlay" onclick="closeComments(event)">
-        <div class="comments-content" onclick="event.stopPropagation()">
+    <!-- Comments Modal - MEJORADO -->
+    <div id="commentsModalOverlay" class="comments-modal-overlay">
+        <div class="comments-content">
             <div class="comments-header">
-                <h3 class="comments-title">Comentarios</h3>
+                <h3 class="comments-title" id="commentsTitle">Comentarios</h3>
                 <button class="comments-close" onclick="closeComments()">×</button>
             </div>
-            <div id="commentsList" style="padding: 20px;">
+            
+            <!-- Comments List -->
+            <div class="comments-list" id="commentsList">
                 <!-- Comments will be loaded here -->
+            </div>
+            
+            <!-- Comment Input -->
+            <div class="comment-input-section">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=currentUser" alt="Tú" class="current-user-avatar" id="currentUserAvatar">
+                <div class="comment-input-wrapper">
+                    <input 
+                        type="text" 
+                        class="comment-input" 
+                        id="commentInput" 
+                        placeholder="Comentar..."
+                        onkeypress="handleCommentKeyPress(event)"
+                    >
+                </div>
+                <button class="comment-submit" onclick="submitComment()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
@@ -1489,7 +1744,15 @@
         // URLs base para redirecciones
         const BASE_URL = 'https://estelarlatam.com';
         
-        // Datos de ejemplo
+        // Usuario actual (simulado)
+        const currentUser = {
+            id: 'currentUser',
+            username: 'Tú',
+            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=currentUser',
+            verified: false
+        };
+
+        // Datos de ejemplo con comentarios
         const samplePosts = [
             {
                 id: 1,
@@ -1505,7 +1768,18 @@
                 isNew: true,
                 liked: false,
                 saved: false,
-                isStaff: false
+                isStaff: false,
+                comments: [
+                    {
+                        id: 101,
+                        userId: "user456",
+                        username: "MARÍA TERESA",
+                        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=maria",
+                        verified: true,
+                        text: "🌹🌹🌹🌹🌹",
+                        time: "Hace 4 h"
+                    }
+                ]
             },
             {
                 id: 2,
@@ -1521,7 +1795,8 @@
                 isNew: false,
                 liked: false,
                 saved: false,
-                isStaff: false
+                isStaff: false,
+                comments: []
             },
             {
                 id: 3,
@@ -1538,7 +1813,27 @@
                 liked: true,
                 saved: true,
                 isStaff: true,
-                role: "Administrador"
+                role: "Administrador",
+                comments: [
+                    {
+                        id: 201,
+                        userId: "user789",
+                        username: "FanEstelar",
+                        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=fan",
+                        verified: false,
+                        text: "¡Emocionado por la actualización! 🎉",
+                        time: "Hace 1 h"
+                    },
+                    {
+                        id: 202,
+                        userId: "user101",
+                        username: "GamerPro",
+                        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=gamer",
+                        verified: true,
+                        text: "¿Cuándo estará disponible para todos?",
+                        time: "Hace 30 min"
+                    }
+                ]
             },
             {
                 id: 4,
@@ -1555,7 +1850,8 @@
                 liked: false,
                 saved: false,
                 isStaff: true,
-                role: "Community Manager"
+                role: "Community Manager",
+                comments: []
             },
             {
                 id: 5,
@@ -1572,7 +1868,18 @@
                 liked: false,
                 saved: false,
                 isStaff: true,
-                role: "Soporte Técnico"
+                role: "Soporte Técnico",
+                comments: [
+                    {
+                        id: 301,
+                        userId: "user303",
+                        username: "UsuarioCurioso",
+                        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=curious",
+                        verified: false,
+                        text: "¿Afectará el progreso guardado?",
+                        time: "Hace 12 h"
+                    }
+                ]
             }
         ];
 
@@ -1581,13 +1888,15 @@
         let selectedHashtags = new Set();
         let hasChanges = false;
         let isModalOpen = false;
+        let currentPostId = null;
+        let openCommentMenuId = null;
 
         // Inicializar
         document.addEventListener('DOMContentLoaded', function() {
             loadPosts();
         });
 
-        // Create Modal Functions - CORREGIDAS
+        // Create Modal Functions
         function openCreateModal() {
             if (isModalOpen) return;
             
@@ -1614,7 +1923,6 @@
             document.body.style.overflow = '';
             isModalOpen = false;
             
-            // Reset después de la animación
             setTimeout(() => {
                 resetForm();
             }, 300);
@@ -1902,8 +2210,7 @@
                 `<span class="user-role">${post.role}</span>` : 
                 `<span class="post-time">Hace ${post.time}</span>`;
 
-            // URL del perfil del usuario
-            const profileUrl = `${BASE_URL}/perfil/${post.userId}`;
+            const commentCount = post.comments ? post.comments.length : 0;
 
             article.innerHTML = `
                 ${staffHeader}
@@ -1941,10 +2248,11 @@
                                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                             </svg>
                         </button>
-                        <button class="action-btn" onclick="openComments(${post.id})">
+                        <button class="action-btn" onclick="openComments(${post.id})" style="position: relative;">
                             <svg viewBox="0 0 24 24">
                                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                             </svg>
+                            ${commentCount > 0 ? `<span class="comment-count">${commentCount}</span>` : ''}
                         </button>
                         <button class="action-btn" onclick="sharePost(${post.id})">
                             <svg viewBox="0 0 24 24">
@@ -1967,7 +2275,9 @@
                         ${post.caption}
                     </div>
                     <div class="hashtags">${hashtagsHtml}</div>
-                    <div class="view-comments" onclick="openComments(${post.id})">Ver comentarios</div>
+                    <div class="view-comments" onclick="openComments(${post.id})">
+                        ${commentCount > 0 ? `Ver los ${commentCount} comentarios` : 'Ver comentarios'}
+                    </div>
                     <div class="post-date">Hace ${post.time}</div>
                 </div>
             `;
@@ -1983,10 +2293,208 @@
 
         // Abrir página de hashtag en nueva pestaña
         function openHashtagPage(hashtag) {
-            // Eliminar el # para la URL
             const tag = hashtag.replace('#', '');
             const url = `${BASE_URL}/hashtag/${tag}`;
             window.open(url, '_blank');
+        }
+
+        // Comments System
+        function openComments(postId) {
+            currentPostId = postId;
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            const modal = document.getElementById('commentsModalOverlay');
+            const title = document.getElementById('commentsTitle');
+            const list = document.getElementById('commentsList');
+            
+            title.textContent = post.isStaff ? 'Comentarios Oficiales' : 'Comentarios';
+            
+            renderCommentsList(post.comments);
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Actualizar avatar del usuario actual
+            document.getElementById('currentUserAvatar').src = currentUser.avatar;
+        }
+
+        function renderCommentsList(comments) {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '';
+            
+            if (!comments || comments.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-comments">
+                        <div class="empty-comments-icon">💬</div>
+                        <p>No hay comentarios aún</p>
+                        <p style="font-size: 13px; margin-top: 8px;">Sé el primero en comentar</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            comments.forEach(comment => {
+                const commentEl = createCommentElement(comment);
+                list.appendChild(commentEl);
+            });
+        }
+
+        function createCommentElement(comment) {
+            const div = document.createElement('div');
+            div.className = 'comment-item';
+            div.dataset.commentId = comment.id;
+            
+            const verifiedBadge = comment.verified ? 
+                `<span class="verified-badge-small">✓</span>` : '';
+            
+            div.innerHTML = `
+                <img src="${comment.avatar}" alt="${comment.username}" class="comment-avatar" onclick="openUserProfile('${comment.userId}')">
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <span class="comment-username" onclick="openUserProfile('${comment.userId}')">${comment.username}</span>
+                        ${verifiedBadge}
+                        <span class="comment-time">${comment.time}</span>
+                    </div>
+                    <div class="comment-text">${comment.text}</div>
+                </div>
+                <button class="comment-menu-btn" onclick="toggleCommentMenu(${comment.id}, event)">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="5" r="2"></circle>
+                        <circle cx="12" cy="12" r="2"></circle>
+                        <circle cx="12" cy="19" r="2"></circle>
+                    </svg>
+                </button>
+                <div class="comment-options" id="comment-menu-${comment.id}">
+                    <div class="comment-option" onclick="blockUser('${comment.userId}')">Bloquear</div>
+                    <div class="comment-option" onclick="reportComment(${comment.id})">Informe</div>
+                </div>
+            `;
+            
+            return div;
+        }
+
+        function toggleCommentMenu(commentId, event) {
+            event.stopPropagation();
+            
+            // Cerrar menú anterior si existe
+            if (openCommentMenuId && openCommentMenuId !== commentId) {
+                const prevMenu = document.getElementById(`comment-menu-${openCommentMenuId}`);
+                if (prevMenu) prevMenu.classList.remove('show');
+            }
+            
+            const menu = document.getElementById(`comment-menu-${commentId}`);
+            if (menu.classList.contains('show')) {
+                menu.classList.remove('show');
+                openCommentMenuId = null;
+            } else {
+                menu.classList.add('show');
+                openCommentMenuId = commentId;
+            }
+        }
+
+        // Cerrar menús al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            if (openCommentMenuId) {
+                const menu = document.getElementById(`comment-menu-${openCommentMenuId}`);
+                if (menu && !menu.contains(event.target)) {
+                    menu.classList.remove('show');
+                    openCommentMenuId = null;
+                }
+            }
+        });
+
+        function blockUser(userId) {
+            showToast('🚫 Usuario bloqueado');
+            if (openCommentMenuId) {
+                document.getElementById(`comment-menu-${openCommentMenuId}`).classList.remove('show');
+                openCommentMenuId = null;
+            }
+        }
+
+        function reportComment(commentId) {
+            showToast('🚩 Comentario reportado');
+            if (openCommentMenuId) {
+                document.getElementById(`comment-menu-${openCommentMenuId}`).classList.remove('show');
+                openCommentMenuId = null;
+            }
+        }
+
+        function closeComments() {
+            const modal = document.getElementById('commentsModalOverlay');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            currentPostId = null;
+            
+            // Cerrar menú abierto si existe
+            if (openCommentMenuId) {
+                const menu = document.getElementById(`comment-menu-${openCommentMenuId}`);
+                if (menu) menu.classList.remove('show');
+                openCommentMenuId = null;
+            }
+        }
+
+        function handleCommentKeyPress(event) {
+            if (event.key === 'Enter') {
+                submitComment();
+            }
+        }
+
+        function submitComment() {
+            const input = document.getElementById('commentInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            const post = posts.find(p => p.id === currentPostId);
+            if (!post) return;
+            
+            // Crear nuevo comentario
+            const newComment = {
+                id: Date.now(),
+                userId: currentUser.id,
+                username: currentUser.username,
+                avatar: currentUser.avatar,
+                verified: currentUser.verified,
+                text: text,
+                time: 'Justo ahora'
+            };
+            
+            // Agregar al post
+            if (!post.comments) post.comments = [];
+            post.comments.push(newComment);
+            
+            // Limpiar input
+            input.value = '';
+            
+            // Actualizar vista
+            renderCommentsList(post.comments);
+            
+            // Actualizar contador en el post
+            updatePostCommentCount(currentPostId, post.comments.length);
+            
+            showToast('💬 Comentario publicado');
+        }
+
+        function updatePostCommentCount(postId, count) {
+            // Actualizar el badge en el botón de comentarios
+            const postCard = document.querySelector(`[data-post-id="${postId}"]`);
+            if (postCard) {
+                const commentBtn = postCard.querySelector('.action-btn:nth-child(2)');
+                const viewComments = postCard.querySelector('.view-comments');
+                
+                // Actualizar o crear badge
+                let badge = commentBtn.querySelector('.comment-count');
+                if (!badge) {
+                    badge = document.createElement('span');
+                    badge.className = 'comment-count';
+                    commentBtn.appendChild(badge);
+                }
+                badge.textContent = count;
+                
+                // Actualizar texto
+                viewComments.textContent = count > 0 ? `Ver los ${count} comentarios` : 'Ver comentarios';
+            }
         }
 
         // Cambiar tab
@@ -2067,39 +2575,7 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // Comments modal
-        function openComments(postId) {
-            const modal = document.getElementById('commentsModalOverlay');
-            const list = document.getElementById('commentsList');
-            const post = posts.find(p => p.id === postId);
-            
-            const title = post && post.isStaff ? 'Comentarios Oficiales' : 'Comentarios';
-            document.querySelector('.comments-title').textContent = title;
-            
-            list.innerHTML = `
-                <div style="text-align: center; color: #636e72; padding: 40px;">
-                    <div style="font-size: 32px; margin-bottom: 10px;">💬</div>
-                    <p>No hay comentarios aún</p>
-                    <p style="font-size: 13px; margin-top: 8px;">Sé el primero en comentar</p>
-                </div>
-            `;
-            
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeComments(event) {
-            if (!event || event.target.id === 'commentsModalOverlay' || event.target.classList.contains('comments-close')) {
-                document.getElementById('commentsModalOverlay').classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        }
-
         // Otras funciones
-        function showNotifications() {
-            showToast('🔔 Notificaciones');
-        }
-
         function showPostMenu(postId) {
             const post = posts.find(p => p.id === postId);
             if (post && post.isStaff) {
