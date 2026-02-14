@@ -1742,20 +1742,42 @@
 
     <script>
         // ==========================================
-        // CONFIGURACIÓN DE LA API DE GOOGLE APPS SCRIPT
+        // CONFIGURACIÓN - ACTUALIZA ESTA URL
         // ==========================================
         
-        // URL DE TU API DESPLEGADA (reemplaza con tu URL real)
+        // REEMPLAZA ESTA URL con tu nueva URL de Google Apps Script
         const API_URL = 'https://script.google.com/macros/s/AKfycbws1DTax0HHy9BtcZVg1Ij6qq26jI99jTyL1bGssPq1yKU8ItCPExxU9A8X_Cc6zXs/exec';
         
-        // ID del usuario actualmente logueado (obtener de tu sistema de autenticación)
-        const CURRENT_USER_ID = 'u001'; 
-        
+        // ID del usuario actualmente logueado
+        const CURRENT_USER_ID = 'u001';
+
         // ==========================================
-        // FUNCIONES DE LA API - CORREGIDAS PARA COINCIDIR CON APPS SCRIPT
+        // VARIABLES GLOBALES Y ESTADO
         // ==========================================
         
-        // Función para llamar a tu API específica (GET)
+        const BASE_URL = 'https://estelarlatam.com';
+        
+        let currentUser = {
+            id: CURRENT_USER_ID,
+            username: 'Tú',
+            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=currentUser',
+            verified: false
+        };
+
+        let posts = [];
+        let currentTab = 'recommended';
+        let selectedHashtags = new Set();
+        let hasChanges = false;
+        let isModalOpen = false;
+        let currentPostId = null;
+        let openCommentMenuId = null;
+        let currentImageBase64 = null;
+
+        // ==========================================
+        // FUNCIONES DE LA API - CORREGIDAS
+        // ==========================================
+        
+        // Función para llamar a la API (GET)
         async function callAPI(action, params = {}) {
             const url = new URL(API_URL);
             url.searchParams.append('action', action);
@@ -1766,7 +1788,18 @@
             });
             
             try {
-                const response = await fetch(url);
+                const response = await fetch(url, {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
                 return data;
             } catch (error) {
@@ -1778,18 +1811,28 @@
         // Subir imagen a ImgBB a través de tu API (POST)
         async function uploadImage(base64Image, name = 'post') {
             try {
+                // Limpiar base64
+                const cleanBase64 = base64Image.replace(/^data:image\/\w+;base64,/, '');
+                
                 const response = await fetch(API_URL, {
                     method: 'POST',
+                    mode: 'cors',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({
                         action: 'uploadImage',
                         userId: CURRENT_USER_ID,
-                        image: base64Image,
+                        image: cleanBase64,
                         name: name
                     })
                 });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 return await response.json();
             } catch (error) {
                 console.error('Error subiendo imagen:', error);
@@ -1802,8 +1845,10 @@
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
+                    mode: 'cors',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({
                         action: 'createPost',
@@ -1813,6 +1858,11 @@
                         hashtags: hashtags
                     })
                 });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 return await response.json();
             } catch (error) {
                 console.error('Error creando post:', error);
@@ -1820,27 +1870,61 @@
             }
         }
         
-        // ==========================================
-        // CORRECCIÓN CLAVE: Usar nombres exactos de tu Apps Script
-        // ==========================================
-        
-        // Dar like a un post -> toggleLike (no likePost)
+        // Dar like a un post
         async function likePostAPI(postId) {
-            return await callAPI('toggleLike', { postId: postId });
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'toggleLike',
+                        userId: CURRENT_USER_ID,
+                        postId: postId
+                    })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Error en like:', error);
+                throw error;
+            }
         }
         
-        // Guardar post -> toggleSave (no savePost)
+        // Guardar post
         async function savePostAPI(postId) {
-            return await callAPI('toggleSave', { postId: postId });
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'toggleSave',
+                        userId: CURRENT_USER_ID,
+                        postId: postId
+                    })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Error guardando:', error);
+                throw error;
+            }
         }
         
-        // Agregar comentario -> createComment (no addComment)
+        // Agregar comentario
         async function addCommentAPI(postId, text) {
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
+                    mode: 'cors',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({
                         action: 'createComment',
@@ -1856,41 +1940,17 @@
             }
         }
         
-        // Obtener posts del feed -> usar nombres exactos: recommended, following, staff
+        // Obtener posts del feed
         async function getFeedAPI(type = 'recommended') {
-            // Mapeo directo a los nombres que espera tu Apps Script
             const validTypes = ['recommended', 'following', 'staff'];
             const action = validTypes.includes(type) ? type : 'recommended';
             return await callAPI(action);
         }
         
-        // Obtener comentarios de un post -> comments (no getComments)
+        // Obtener comentarios de un post
         async function getCommentsAPI(postId) {
             return await callAPI('comments', { postId: postId });
         }
-
-        // ==========================================
-        // VARIABLES GLOBALES Y ESTADO
-        // ==========================================
-        
-        const BASE_URL = 'https://estelarlatam.com';
-        
-        // Usuario actual (se cargará desde la API)
-        let currentUser = {
-            id: CURRENT_USER_ID,
-            username: 'Tú',
-            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=currentUser',
-            verified: false
-        };
-
-        let posts = [];
-        let currentTab = 'recommended';
-        let selectedHashtags = new Set();
-        let hasChanges = false;
-        let isModalOpen = false;
-        let currentPostId = null;
-        let openCommentMenuId = null;
-        let currentImageBase64 = null; // Para almacenar la imagen seleccionada
 
         // ==========================================
         // INICIALIZACIÓN
@@ -1910,7 +1970,6 @@
                         ...currentUser,
                         ...userData.profile
                     };
-                    // Actualizar avatar en el modal de comentarios
                     document.getElementById('currentUserAvatar').src = currentUser.avatar_url || currentUser.avatar;
                 }
             } catch (error) {
@@ -2072,7 +2131,7 @@
         }
 
         // ==========================================
-        // PUBLICAR POST CON INTEGRACIÓN API
+        // PUBLICAR POST CON INTEGRACIÓN API - CORREGIDO
         // ==========================================
         
         async function publishPost() {
@@ -2095,19 +2154,26 @@
                 // Si hay imagen, subirla primero a ImgBB
                 if (currentImageBase64) {
                     showToast('📤 Subiendo imagen...');
+                    console.log('Subiendo imagen...');
+                    
                     const uploadResult = await uploadImage(currentImageBase64, `post_${Date.now()}`);
+                    console.log('Resultado de subida:', uploadResult);
                     
                     if (uploadResult.success) {
                         imageUrl = uploadResult.url;
+                        console.log('Imagen subida:', imageUrl);
                     } else {
-                        throw new Error('Error subiendo imagen');
+                        throw new Error(uploadResult.error || 'Error subiendo imagen');
                     }
                 }
                 
                 // Crear el post en la base de datos
                 showToast('📝 Creando publicación...');
+                console.log('Creando post con:', { caption, imageUrl, hashtags: Array.from(selectedHashtags) });
+                
                 const hashtagsArray = Array.from(selectedHashtags);
                 const result = await createPostAPI(caption, imageUrl, hashtagsArray);
+                console.log('Resultado de crear post:', result);
                 
                 if (result.success) {
                     showToast('✨ Publicación creada exitosamente');
@@ -2180,6 +2246,7 @@
             try {
                 // Llamar a la API para obtener posts
                 const result = await getFeedAPI(currentTab);
+                console.log('Posts cargados:', result);
                 
                 if (result.success) {
                     // Mapear datos de la API al formato del frontend
@@ -2198,7 +2265,7 @@
                         saved: apiPost.saved,
                         isStaff: apiPost.is_staff_post,
                         role: apiPost.role,
-                        comments: [] // Se cargarán al abrir comentarios
+                        comments: []
                     }));
                 } else {
                     // Si falla la API, usar datos de ejemplo para demo
@@ -2525,7 +2592,7 @@
                         userId: apiComment.user_id,
                         username: apiComment.username,
                         avatar: apiComment.avatar_url,
-                        verified: false, // La API no devuelve esto, ajustar si es necesario
+                        verified: false,
                         text: apiComment.text,
                         time: apiComment.time_ago
                     }));
