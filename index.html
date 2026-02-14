@@ -1752,7 +1752,7 @@
         const CURRENT_USER_ID = 'u001'; 
         
         // ==========================================
-        // FUNCIONES DE LA API
+        // FUNCIONES DE LA API - CORREGIDAS PARA COINCIDIR CON APPS SCRIPT
         // ==========================================
         
         // Función para llamar a tu API específica (GET)
@@ -1820,17 +1820,21 @@
             }
         }
         
-        // Dar like a un post
+        // ==========================================
+        // CORRECCIÓN CLAVE: Usar nombres exactos de tu Apps Script
+        // ==========================================
+        
+        // Dar like a un post -> toggleLike (no likePost)
         async function likePostAPI(postId) {
-            return await callAPI('likePost', { postId: postId });
+            return await callAPI('toggleLike', { postId: postId });
         }
         
-        // Guardar post
+        // Guardar post -> toggleSave (no savePost)
         async function savePostAPI(postId) {
-            return await callAPI('savePost', { postId: postId });
+            return await callAPI('toggleSave', { postId: postId });
         }
         
-        // Agregar comentario
+        // Agregar comentario -> createComment (no addComment)
         async function addCommentAPI(postId, text) {
             try {
                 const response = await fetch(API_URL, {
@@ -1839,7 +1843,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        action: 'addComment',
+                        action: 'createComment',
                         userId: CURRENT_USER_ID,
                         postId: postId,
                         text: text
@@ -1852,14 +1856,17 @@
             }
         }
         
-        // Obtener posts del feed
+        // Obtener posts del feed -> usar nombres exactos: recommended, following, staff
         async function getFeedAPI(type = 'recommended') {
-            return await callAPI('getFeed', { type: type });
+            // Mapeo directo a los nombres que espera tu Apps Script
+            const validTypes = ['recommended', 'following', 'staff'];
+            const action = validTypes.includes(type) ? type : 'recommended';
+            return await callAPI(action);
         }
         
-        // Obtener comentarios de un post
+        // Obtener comentarios de un post -> comments (no getComments)
         async function getCommentsAPI(postId) {
-            return await callAPI('getComments', { postId: postId });
+            return await callAPI('comments', { postId: postId });
         }
 
         // ==========================================
@@ -1897,14 +1904,14 @@
         // Cargar datos del usuario actual
         async function loadUserData() {
             try {
-                const userData = await callAPI('getUserData');
+                const userData = await callAPI('profile', { profileId: CURRENT_USER_ID });
                 if (userData && userData.success) {
                     currentUser = {
                         ...currentUser,
-                        ...userData.user
+                        ...userData.profile
                     };
                     // Actualizar avatar en el modal de comentarios
-                    document.getElementById('currentUserAvatar').src = currentUser.avatar;
+                    document.getElementById('currentUserAvatar').src = currentUser.avatar_url || currentUser.avatar;
                 }
             } catch (error) {
                 console.error('Error cargando datos de usuario:', error);
@@ -2175,7 +2182,24 @@
                 const result = await getFeedAPI(currentTab);
                 
                 if (result.success) {
-                    posts = result.posts || [];
+                    // Mapear datos de la API al formato del frontend
+                    posts = (result.data || []).map(apiPost => ({
+                        id: apiPost.post_id,
+                        userId: apiPost.user_id,
+                        username: apiPost.username,
+                        avatar: apiPost.avatar_url,
+                        image: apiPost.image_url,
+                        likes: apiPost.likes_count,
+                        caption: apiPost.caption,
+                        hashtags: apiPost.hashtags || [],
+                        time: apiPost.time_ago,
+                        isNew: apiPost.is_new,
+                        liked: apiPost.liked,
+                        saved: apiPost.saved,
+                        isStaff: apiPost.is_staff_post,
+                        role: apiPost.role,
+                        comments: [] // Se cargarán al abrir comentarios
+                    }));
                 } else {
                     // Si falla la API, usar datos de ejemplo para demo
                     console.warn('API no disponible, usando datos de ejemplo');
@@ -2489,13 +2513,22 @@
             document.body.style.overflow = 'hidden';
             
             // Actualizar avatar del usuario actual
-            document.getElementById('currentUserAvatar').src = currentUser.avatar;
+            document.getElementById('currentUserAvatar').src = currentUser.avatar_url || currentUser.avatar;
             
             // Cargar comentarios actualizados desde la API
             try {
                 const result = await getCommentsAPI(postId);
-                if (result.success && result.comments) {
-                    post.comments = result.comments;
+                if (result.success && result.data) {
+                    // Mapear datos de la API al formato del frontend
+                    post.comments = result.data.map(apiComment => ({
+                        id: apiComment.comment_id,
+                        userId: apiComment.user_id,
+                        username: apiComment.username,
+                        avatar: apiComment.avatar_url,
+                        verified: false, // La API no devuelve esto, ajustar si es necesario
+                        text: apiComment.text,
+                        time: apiComment.time_ago
+                    }));
                     renderCommentsList(post.comments);
                 }
             } catch (error) {
@@ -2637,10 +2670,20 @@
                 // Enviar comentario a la API
                 const result = await addCommentAPI(currentPostId, text);
                 
-                if (result.success && result.comment) {
+                if (result.success && result.data) {
                     // Agregar el comentario devuelto por la API
+                    const newComment = {
+                        id: result.data.comment_id,
+                        userId: result.data.user_id,
+                        username: result.data.username,
+                        avatar: result.data.avatar_url,
+                        verified: false,
+                        text: result.data.text,
+                        time: result.data.time_ago
+                    };
+                    
                     if (!post.comments) post.comments = [];
-                    post.comments.push(result.comment);
+                    post.comments.push(newComment);
                     
                     // Limpiar input
                     input.value = '';
@@ -2665,7 +2708,7 @@
                     id: Date.now(),
                     userId: currentUser.id,
                     username: currentUser.username,
-                    avatar: currentUser.avatar,
+                    avatar: currentUser.avatar_url || currentUser.avatar,
                     verified: currentUser.verified,
                     text: text,
                     time: 'Justo ahora'
